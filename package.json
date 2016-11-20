@@ -17,8 +17,12 @@
   },
   "homepage": "https://github.com/Greta741/TravelJournal#readme",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "eslint": "^3.6.0",
-    "express": "^4.14.0",
-    "mongodb": "^2.2.10"
+    "handlebars": "^4.0.6",
+    "hapi": "^15.2.0",
+    "inert": "^4.0.2",
+    "mongodb": "^2.2.11",
+    "vision": "^4.1.0"
   }
 }
