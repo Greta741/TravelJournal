@@ -30,6 +30,18 @@ server.state('session', {
 
 server.route({
     method: 'GET',
+    path: '/public/{path*}',
+    handler: {
+        directory: {
+            path: './public',
+            listing: false,
+            index: false,
+        },
+    },
+});
+
+server.route({
+    method: 'GET',
     path: '/',
     handler: displayService.getMainPage,
 });
@@ -53,7 +65,7 @@ server.route({
 });
 
 server.route({
-    method: 'POST',
+    method: 'GET',
     path: '/logout',
     handler: displayService.logout,
 });
@@ -64,7 +76,25 @@ server.route({
     handler: displayService.register,
 });
 
- mongoDb.mongoConnect(() => {});
+server.route({
+    method: 'GET',
+    path: '/changePassword',
+    handler: displayService.changePasswordView,
+});
+
+server.route({
+    method: 'POST',
+    path: '/changePassword',
+    handler: displayService.changePassword,
+});
+
+server.route({
+    method: 'GET',
+    path: '/users',
+    handler: displayService.getUserList,
+});
+
+mongoDb.mongoConnect(() => {});
 server.start((err) => {
 
     if (err) {

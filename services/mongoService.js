@@ -25,17 +25,31 @@ const findEmail = (userEmail, callback) => {
     });
 };
 
-const checkPasswordMatch = (userEmail, hashedPassword, callback) => {
+const getPassword = (userEmail, callback) => {
     collection.find({email: userEmail}).toArray((err, res) => {
         if (res.length !== 0) {
-            if (res[0].password === hashedPassword) {
-                callback(true);
-            } else {
-                callback(false);
-            }
+            callback(res[0]);
         } else {
             callback(false);
         }
+    });
+};
+
+const saveNewPassword = (userEmail, hashedPassword, callback) => {
+    let user;
+    collection.find({email: userEmail}).toArray((err, res) => {
+        user = res[0];
+        user.password = hashedPassword;
+        collection.update({email: userEmail}, user, callback);
+    });
+};
+
+const getAllUsers = (callback) => {
+    collection.find({}, {name: 1,
+                        email: 1,
+                        active: 1,
+                        journeysCount: 1}).toArray((err, res) => {
+        callback(res);
     });
 };
 
@@ -43,5 +57,7 @@ module.exports = {
     mongoConnect,
     insertUser,
     findEmail,
-    checkPasswordMatch,
+    getPassword,
+    saveNewPassword,
+    getAllUsers,
 }

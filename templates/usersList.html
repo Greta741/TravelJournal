@@ -1,0 +1,23 @@
+{{{htmlData.head}}}
+<body>
+{{{htmlData.navbar}}}
+
+<div id="main-content">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Journeys</th>
+            <th>Active</th>
+        </tr>
+        </thead>
+        <tbody>
+            {{#each usersList}}
+                {{{this}}}
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
+</body>
