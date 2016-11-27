@@ -256,9 +256,9 @@ const generateUsersList = (users) => {
         `<td>${user.email}</td>` +
         `<td>${user.journeysCount}</td>`;
         if (user.active) {
-            userData +=  `<td id="user-${usersCount}" onclick="Block("${user.email}", ${usersCount})">Block</td>`;
+            userData +=  `<td id="user-${usersCount}" onclick="Block('${user.email}', 'user-${usersCount}')">Block</td>`;
         } else {
-            userData +=  `<td id="user-${usersCount}" onclick="Unblock("${user.email}", ${usersCount})">Unblock</td>`;
+            userData +=  `<td id="user-${usersCount}" onclick="Unblock('${user.email}', 'user-${usersCount}')">Unblock</td>`;
         }
         userData += '</tr>';
         usersList.push(userData);
