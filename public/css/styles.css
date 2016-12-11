@@ -2,3 +2,18 @@
     margin: auto;
     width: 30%;
 }
+
+.point {
+    border: solid 1px lightgray;
+    padding: 5px;
+}
+
+.point-img {
+    max-width: 100%;
+    margin-bottom: 5px;
+}
+
+.btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

@@ -1,4 +1,5 @@
 const displayService = require('./services/displayService.js');
+const journeyService = require('./services/journeyService.js');
 const mongoDb = require('./services/mongoService.js');
 const Hapi = require('hapi');
 const Vision = require('vision');
@@ -93,6 +94,22 @@ server.route({
     path: '/users',
     handler: displayService.getUserList,
 });
+
+
+
+
+server.route({
+    method: 'GET',
+    path: '/newJourney',
+    handler: journeyService.newJourneyView,
+});
+
+server.route({
+    method: 'POST',
+    path: '/newJourney',
+    handler: journeyService.newJourney,
+});
+
 
 mongoDb.mongoConnect(() => {});
 server.start((err) => {

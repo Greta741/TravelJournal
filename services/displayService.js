@@ -137,6 +137,7 @@ const registerUser = (request, reply) => {
         active: true,
         journeysCount: 0,
         journeys: [],
+        date_registered: new Date(),
         });
     });
     reply().redirect('/').state('session', {
@@ -295,6 +296,8 @@ const logout = (request, reply) => {
 };
 
 module.exports = {
+    htmlHead,
+    generateNavBar,
     getMainPage,
     loginView,
     registerView,
