@@ -95,9 +95,6 @@ server.route({
     handler: displayService.getUserList,
 });
 
-
-
-
 server.route({
     method: 'GET',
     path: '/newJourney',

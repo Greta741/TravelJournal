@@ -155,7 +155,7 @@ const register = (request, reply) => {
             request.payload.email + '">',
         errors: '',
     };
-    data.errors += '<div class="errors">';
+    data.errors += '<div class="error">';
 
     if (!request.payload.name.match(/^[0-9a-zA-Z]+$/)) {
         data.errors += 'Name can only contain letters and numbers<br>';
@@ -205,7 +205,7 @@ const changePasswordView = (request, reply) => {
 
 const changePassword = (request, reply) => {
     let data = {
-        errors: '<div class="errors">',
+        errors: '<div class="error">',
     };
     let errorsCount = 0;
     if (request.payload.password !== request.payload.repeatPassword) {
