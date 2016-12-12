@@ -1,4 +1,5 @@
 const displayService = require('./services/displayService.js');
+const accountService = require('./services/accountService.js');
 const journeyService = require('./services/journeyService.js');
 const mongoDb = require('./services/mongoService.js');
 const Hapi = require('hapi');
@@ -50,49 +51,49 @@ server.route({
 server.route({
     method: 'GET',
     path: '/login',
-    handler: displayService.loginView,
+    handler: accountService.loginView,
 });
 
 server.route({
     method: 'GET',
     path: '/register',
-    handler: displayService.registerView,
+    handler: accountService.registerView,
 });
 
 server.route({
     method: 'POST',
     path: '/login',
-    handler: displayService.login,
+    handler: accountService.login,
 });
 
 server.route({
     method: 'GET',
     path: '/logout',
-    handler: displayService.logout,
+    handler: accountService.logout,
 });
 
 server.route({
     method: 'POST',
     path: '/register',
-    handler: displayService.register,
+    handler: accountService.register,
 });
 
 server.route({
     method: 'GET',
     path: '/changePassword',
-    handler: displayService.changePasswordView,
+    handler: accountService.changePasswordView,
 });
 
 server.route({
     method: 'POST',
     path: '/changePassword',
-    handler: displayService.changePassword,
+    handler: accountService.changePassword,
 });
 
 server.route({
     method: 'GET',
     path: '/users',
-    handler: displayService.getUserList,
+    handler: accountService.getUserList,
 });
 
 server.route({

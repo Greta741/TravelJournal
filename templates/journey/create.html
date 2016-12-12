@@ -94,6 +94,8 @@
             html += `<label class="field">Image</label>` +
         `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">` +
         `<img class="point-img" src="${point.image}" alt="image">`;
+        } else {
+             html += `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">`;
         }
         html += `<button type="button" class="btn btn-default" onclick="edit('${point.id}', '${point.name}', '${point.description}', ${point.image})">Edit</button>`;
         html += `<button type="button" class="btn btn-default" onclick="remove('${point.id}')">Remove</button>`;
@@ -159,7 +161,7 @@
         data.description = document.getElementById('description').value;
         data.summary = document.getElementById('summary').value;
         data.names = names;
-        data.descriotions = descriptions;
+        data.descriptions = descriptions;
         data.images = images;
         return data;
     }
