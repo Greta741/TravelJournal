@@ -13,7 +13,6 @@ const newJourneyView = (request, reply) => {
 };
 
 const generateJourneyPoints = (data) => {
-    console.log(data);
     let journeyPoints = [];
     if (data['names[]'] instanceof Array) {
         for (var i = 0; i < data['names[]'].length; i++) {
@@ -226,11 +225,17 @@ const journeyView = (request, reply) => {
      mongoService.getJourney(id, (journey) => {
         if (journey) {
             journey = generatePointsImageDivs(journey);
-            console.log(journey);
-            reply.view('./journey/view.html', {htmlData: {
-                head: displayService.htmlHead,
-                navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-            }, data: journey});
+            if (request.state.session) {
+                reply.view('./journey/view.html', {htmlData: {
+                    head: displayService.htmlHead,
+                    navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
+                }, data: journey});
+            } else {
+                reply.view('./journey/view.html', {htmlData: {
+                    head: displayService.htmlHead,
+                    navbar:  displayService.generateNavBar(false, false),
+                }, data: journey});
+            }
         } else {
              errorMessage(reply, request, 'Sorry, cannot find.');
         }
