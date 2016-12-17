@@ -1,0 +1,190 @@
+{{{htmlData.head}}}
+<body>
+{{{htmlData.navbar}}}
+
+
+<div id="main-content">
+    <div id="errors" class="error"></div>
+    <div class="simple-form" id="formContainer">
+	<form action="javascript:submit();" id="journey-form">
+        {{{data.id}}}
+        <div>
+            <label class="field" for="Name">Name</label>
+            {{{data.name}}}
+            </div>
+         <div>
+                <label class="field" for="description">Description</label>
+                <textarea id="description" name="description" rows="15" class="form-control input-sm" required="true">{{data.description}}</textarea>
+            </div>
+
+            <div id="journey-points">
+                <label>Journey points</label>
+                {{#each data.points}}
+                    {{{this}}}
+                {{/each}}
+            </div>
+            
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#journeyPointModal">Add</button>
+
+            <div>
+                <label class="field" for="summary">Summary</label>
+                <textarea id="summary" name="summary" rows="15" class="form-control input-sm" required="true">{{data.summary}}</textarea>
+            </div>
+
+            <input type="submit" class="submit btn btn-success" name="submit" value="Save">
+    </form>
+
+            <div class="modal fade" id="journeyPointModal" tabindex="-1" role="dialog" aria-labelledby="journeyPointModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <form action="javascript:addNewJourneyPoint();">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="journeyPointModalLabel">Add journey point</h4>
+                </div>
+                
+                <div class="modal-body">
+                    <div id="point-errors" class="error"></div>
+                    <input type="hidden" id="pointId" name="pointId" class="form-control input-sm" value="">
+                    <div>
+                        <label class="field" for="pointName">Name</label>
+                        <input type="text" id="pointName" name="pointName" class="form-control input-sm" required="true" value="">
+                    </div>
+                    <div>
+                        <label class="field" for="pointDescription">Journey point description</label>
+                        <textarea id="pointDescription" name="pointDescription" rows="5" class="form-control input-sm" required="true"></textarea>
+                    </div>
+                    <div>
+                        <label class="field" for="image">Image url</label>
+                        <input type="URL" id="image" name="image" class="form-control input-sm" value="">
+                    </div>
+
+                    </div>
+                
+                <div class="modal-footer">
+                    <input type="submit" class="submit btn btn-success" name="submit" value="Add">
+                    <button type="button" onclick="clearModal()" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                </div>
+                </form>
+                </div>
+            </div>
+            </div>
+
+
+    </div>
+</div>
+
+<script>
+    {{{data.script}}}
+
+    function clearModal() {
+        document.getElementById('pointName').value = "";
+        document.getElementById('pointDescription').value = "";
+        document.getElementById('image').value = "";
+        document.getElementById('point-errors').innerHTML = "";
+    }
+
+    function generateHtmlPoint(point) {
+        var html = '';
+        html += `<label class="field">Name</label>` +
+        `<input class="point-name" type="hidden" name="pointName" class="form-control input-sm" value="${point.name}">` +
+        `<div clas="point-div">${point.name}</div>` +
+        `<label class="field">Description</label>` +
+        `<input class="point-description" type="hidden" name="pointDescription" class="form-control input-sm" value="${point.description}">` +
+        `<div clas="point-div">${point.description}</div>`;
+        if (point.image) {
+            html += `<label class="field">Image</label>` +
+        `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">` +
+        `<img class="point-img" src="${point.image}" alt="image">`;
+        } else {
+             html += `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">`;
+        }
+        html += `<button type="button" class="btn btn-default" onclick="edit('${point.id}', '${point.name}', '${point.description}', '${point.image}')">Edit</button>`;
+        html += `<button type="button" class="btn btn-default" onclick="remove('${point.id}')">Remove</button>`;
+        if (point.update) {
+            document.getElementById(point.id).innerHTML = html;
+        } else {
+            document.getElementById('journey-points').innerHTML += `<div id="${point.id}" class="point">` +
+            html + '</div>';
+            pointsCount++;
+        }
+    }
+
+    function addNewJourneyPoint() {
+        var point = {};
+        point.name =  document.getElementById('pointName').value;
+        point.description = document.getElementById('pointDescription').value;
+        point.image = document.getElementById('image').value;
+        if (!point.image) {
+            point.image = false;
+        }
+        if (document.getElementById('pointId').value) {
+            point.id = document.getElementById('pointId').value;
+            point.update = true;
+        } else {
+            point.id = `point-${id++}`;
+        }
+        generateHtmlPoint(point);
+        $('#journeyPointModal').modal('hide');
+        clearModal();
+    }
+
+    function edit(id, name, description, image) {
+        document.getElementById('pointId').value = id;
+        document.getElementById('pointName').value = name;
+        document.getElementById('pointDescription').value = description;
+        if (image) {
+            document.getElementById('image').value = image;
+        }
+        $('#journeyPointModal').modal('show');
+    }
+
+    function remove(pointId) {
+        var node = document.getElementById(pointId);
+        node.parentNode.removeChild(node);
+        pointsCount--;
+    }
+
+    function getData() {
+        var data = {};
+        var names = document.getElementsByClassName('point-name');
+        names  = [].map.call(names, function(name) {
+            return name.value;
+        });
+        var descriptions = document.getElementsByClassName('point-description');
+        descriptions  = [].map.call(descriptions, function(description) {
+            return description.value;
+        });
+        var images = document.getElementsByClassName('point-image');
+        images  = [].map.call(images, function(image) {
+            return image.value;
+        });
+        data.name = document.getElementById('name').value;
+        data.description = document.getElementById('description').value;
+        data.summary = document.getElementById('summary').value;
+        data.names = names;
+        data.descriptions = descriptions;
+        data.images = images;
+        data.id = document.getElementById('id').value;
+        return data;
+    }
+
+    function submit() {
+        if (pointsCount > 0) {
+            $.post("/editJourney", getData(), function(result) {
+                if (result) {
+                    window.location.replace('/myJourneys');
+                } else {
+                    document.getElementById('errors').innerHTML = 'Failed to save.';
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                }
+            });      
+        } else {
+            console.log('dsgdfg');
+        }
+    }
+
+</script>
+
+
+</body>

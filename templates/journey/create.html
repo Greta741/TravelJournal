@@ -18,7 +18,6 @@
 
             <div id="journey-points">
                 <label>Journey points</label>
-
             </div>
             
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#journeyPointModal">Add</button>
@@ -97,7 +96,7 @@
         } else {
              html += `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">`;
         }
-        html += `<button type="button" class="btn btn-default" onclick="edit('${point.id}', '${point.name}', '${point.description}', ${point.image})">Edit</button>`;
+        html += `<button type="button" class="btn btn-default" onclick="edit('${point.id}', '${point.name}', '${point.description}', '${point.image}')">Edit</button>`;
         html += `<button type="button" class="btn btn-default" onclick="remove('${point.id}')">Remove</button>`;
         if (point.update) {
             document.getElementById(point.id).innerHTML = html;

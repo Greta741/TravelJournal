@@ -1,0 +1,22 @@
+{{{htmlData.head}}}
+<body>
+{{{htmlData.navbar}}}
+
+<div id="main-content">
+    <div class="paragraph paragraph-1">
+        <h1 class="w3-red">{{data.name}}</h1>
+        {{data.description}}</div>
+    {{#each data.points}}
+        <div class="paragraph paragraph-2">
+            <div class="point-info">
+                <h2 class="w3-teal">{{this.location_name}}</h2>
+                <p>{{this.description}}<p>
+            </div>
+            {{{this.image}}}
+        </div>
+    {{/each}}
+    <div class="paragraph paragraph-3">{{data.summary}}</div>
+
+</div>
+
+</body>

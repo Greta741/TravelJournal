@@ -4,6 +4,7 @@ const url = 'mongodb://travelDb:travelDb@ds041566.mlab.com:41566/traveldb?maxPoo
 
 let usersCollection;
 let journeysCollection;
+const ObjectId = require('mongodb').ObjectID;
 
 const mongoConnect = (callback) => {
     MongoClient.connect(url, (err, db) => {
@@ -59,6 +60,24 @@ const insertJourney = (journey) => {
     journeysCollection.insert(journey);
 };
 
+const getJourney = (id, callback) => {
+    if (id.length !== 24 || id === undefined) {
+        callback(false);
+        return;
+    }
+    journeysCollection.find({_id: ObjectId(id)}).toArray((err, res) => {
+        if (res.length === 0) {
+            callback(false);
+        } else {
+            callback(res[0]);
+        }
+    });
+}
+
+const updateJourney = (journey, id) => {
+    journeysCollection.update({_id: ObjectId(id)}, journey);
+};
+
 module.exports = {
     mongoConnect,
     insertUser,
@@ -67,4 +86,6 @@ module.exports = {
     saveNewPassword,
     getAllUsers,
     insertJourney,
+    getJourney,
+    updateJourney,
 }

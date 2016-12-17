@@ -108,6 +108,23 @@ server.route({
     handler: journeyService.newJourney,
 });
 
+server.route({
+    method: 'GET',
+    path: '/editJourney/{id}',
+    handler: journeyService.editJourneyView,
+});
+
+server.route({
+    method: 'POST',
+    path: '/editJourney',
+    handler: journeyService.editJourney,
+});
+
+server.route({
+    method: 'GET',
+    path: '/journey/{id}',
+    handler: journeyService.journeyView,
+});
 
 mongoDb.mongoConnect(() => {});
 server.start((err) => {

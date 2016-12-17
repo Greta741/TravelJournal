@@ -54,3 +54,42 @@
 .journey-description {
     height: 100px;
 }
+
+.paragraph {
+    padding: 10px;
+    margin: 0 100 0 100;
+}
+
+.paragraph-1 {
+    border-radius: 10px 10px 0 0;
+    border: solid 1px lightgray;
+}
+
+.paragraph-1 h1 {
+    margin: -10px -10px 0 -10px;
+    border-radius: 10px 10px 0 0; 
+    padding: 5px;   
+}
+
+.paragraph-2 {
+    border: solid 1px lightgray;
+}
+
+.paragraph-3 {
+    border-radius: 0 0 10px 10px;
+    border: solid 1px lightgray;
+    margin-bottom: 50px;
+}
+
+.point-img img {
+    max-width: 100%;
+    max-height: 500px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.point-info h2 {
+    margin: -10px -10px 0 -10px;
+    padding: 5px;
+}
