@@ -48,6 +48,16 @@ const login = (request, reply) => {
     mongoService.getPassword(request.payload.email, (user) => {
         if (user) {
             hashService.checkMatch(request.payload.password, user.password, (result) => {
+                if (!user.active) {
+                    const data = {
+                        message: '<div class="message">This user is blocked.</div>'
+                    }
+                    reply.view('saved.html', {htmlData: {
+                        head: displayService.htmlHead,
+                        navbar:  displayService.generateNavBar(false, false),
+                    }, data});
+                    return;
+                }
                 if (result) {
                     reply().redirect('/').state('session', {
                         id: user._id,
@@ -200,12 +210,11 @@ const generateUsersList = (users) => {
         let userData = '';
         userData += `<tr><td>${usersCount}</td>` +
         `<td>${user.name}</td>` +
-        `<td>${user.email}</td>` +
-        `<td>${user.journeysCount}</td>`;
+        `<td>${user.email}</td>`;
         if (user.active) {
-            userData +=  `<td id="user-${usersCount}" onclick="Block('${user.email}', 'user-${usersCount}')">Block</td>`;
+            userData +=  `<td class="user-table" id="user-${usersCount}" onclick="block('${user.email}', 'user-${usersCount}')">Block</td>`;
         } else {
-            userData +=  `<td id="user-${usersCount}" onclick="Unblock('${user.email}', 'user-${usersCount}')">Unblock</td>`;
+            userData +=  `<td class="user-table"  id="user-${usersCount}" onclick="unblock('${user.email}', 'user-${usersCount}')">Unblock</td>`;
         }
         userData += '</tr>';
         usersList.push(userData);
@@ -241,6 +250,42 @@ const logout = (request, reply) => {
     reply().unstate('session').redirect('/');
 };
 
+const block = (request, reply) => {
+    if (!request.state.session) {
+        reply.redirect('./login');
+        return;
+    }
+    if (!request.state.session.isAdmin) {
+        const data = {message: `<div class="message">Access denied.</div>`}
+        reply.view('saved.html', {htmlData: {
+            head: displayService.htmlHead,
+            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
+        }, data});
+        return;
+    }
+    mongoService.blockUser(request.payload.email, (result) => {
+        reply(result);
+    });
+};
+
+const unblock = (request, reply) => {
+    if (!request.state.session) {
+        reply.redirect('./login');
+        return;
+    }
+    if (!request.state.session.isAdmin) {
+        const data = {message: `<div class="message">Access denied.</div>`}
+        reply.view('saved.html', {htmlData: {
+            head: displayService.htmlHead,
+            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
+        }, data});
+        return;
+    }
+    mongoService.unblockUser(request.payload.email, (result) => {
+        reply(result);
+    });
+};
+
 module.exports = {
     loginView,
     registerView,
@@ -250,4 +295,6 @@ module.exports = {
     changePassword,
     getUserList,
     logout,
+    block,
+    unblock,
 }

@@ -74,6 +74,11 @@
 
     var id = 0;
     var pointsCount = 0;
+
+    function clearErrors() {
+        document.getElementById('errors').innerHTML = '';
+    }
+
     function clearModal() {
         document.getElementById('pointName').value = "";
         document.getElementById('pointDescription').value = "";
@@ -108,6 +113,7 @@
     }
 
     function addNewJourneyPoint() {
+        clearErrors();
         var point = {};
         point.name =  document.getElementById('pointName').value;
         point.description = document.getElementById('pointDescription').value;
@@ -176,7 +182,8 @@
                 }
             });      
         } else {
-            console.log('dsgdfg');
+            document.getElementById('errors').innerHTML = "Add at least one journey point.";
+            $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     }
 

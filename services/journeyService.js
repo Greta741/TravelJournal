@@ -235,7 +235,6 @@ const journeyView = (request, reply) => {
              errorMessage(reply, request, 'Sorry, cannot find.');
         }
      });
-
 };
 
 module.exports = {

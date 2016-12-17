@@ -78,6 +78,50 @@ const updateJourney = (journey, id) => {
     journeysCollection.update({_id: ObjectId(id)}, journey);
 };
 
+const blockUser = (email, callback) => {
+    getPassword(email, (data) => {
+        if (data) {
+            data.active = false;
+            usersCollection.update({_id: ObjectId(data._id)}, data);
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+};
+
+const unblockUser = (email, callback) => {
+    getPassword(email, (data) => {
+        if (data) {
+            data.active = true;
+            usersCollection.update({_id: ObjectId(data._id)}, data);
+            callback(true);
+        } else {
+            callback(false);
+        }
+    });
+};
+
+const getAllUserJourneys = (id, callback) => {
+    journeysCollection.find({userId: id}).sort({date: -1}).toArray((err, res) => {;
+        if (res.length !== 0) {
+            callback(res);
+        } else {
+            callback(false);
+        }
+    });
+}
+
+const getAllJourneys = (callback) => {
+    journeysCollection.find({}).sort({date: -1}).toArray((err, res) => {;
+        if (res.length !== 0) {
+            callback(res);
+        } else {
+            callback(false);
+        }
+    });
+}
+
 module.exports = {
     mongoConnect,
     insertUser,
@@ -88,4 +132,8 @@ module.exports = {
     insertJourney,
     getJourney,
     updateJourney,
+    blockUser,
+    unblockUser,
+    getAllUserJourneys,
+    getAllJourneys,
 }

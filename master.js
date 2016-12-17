@@ -126,6 +126,24 @@ server.route({
     handler: journeyService.journeyView,
 });
 
+server.route({
+    method: 'POST',
+    path: '/block',
+    handler: accountService.block,
+});
+
+server.route({
+    method: 'POST',
+    path: '/unblock',
+    handler: accountService.unblock,
+});
+
+server.route({
+    method: 'GET',
+    path: '/myJourneys',
+    handler: displayService.myJourneysView,
+});
+
 mongoDb.mongoConnect(() => {});
 server.start((err) => {
 

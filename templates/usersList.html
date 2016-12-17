@@ -3,14 +3,14 @@
 {{{htmlData.navbar}}}
 
 <div id="main-content">
+    <div id="errors" class="error"></div>
     <table class="table">
         <thead>
         <tr>
             <th>Number</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Journeys</th>
-            <th>Active</th>
+            <th>Action</th>
         </tr>
         </thead>
         <tbody>
@@ -22,9 +22,35 @@
 </div>
 
 <script>
-    function block(email, id) {
 
+    function clearErrors() {
+        document.getElementById('errors').innerHTML = '';
     }
+
+    function block(email) {
+        clearErrors();
+        $.post("/block", {email: email}, function(result) {
+            if (result) {
+                location.reload();
+            } else {
+                document.getElementById('errors').innerHTML = 'Failed to save.';
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+            }
+        });
+    }
+
+     function unblock(email) {
+        clearErrors();
+        $.post("/unblock", {email: email}, function(result) {
+            if (result) {
+                location.reload();
+            } else {
+                document.getElementById('errors').innerHTML = 'Failed to save.';
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+            }
+        });
+    }
+    
 </script>
 
 </body>

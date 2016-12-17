@@ -26,7 +26,7 @@ const generateNavBar = (isLoggedIn, isAdmin) => {
         '<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">Journeys' +
             '<span class="caret"></span></a>' +
             '<ul class="dropdown-menu">' +
-                '<li><a href="" onclick="doSomething()">My journeys</a></li>' +
+                '<li><a href="./myJourneys">My journeys</a></li>' +
                 '<li><a href="./newJourney">New journey</a></li>' +
             '</ul></li>' +
             '<li class="dropdown">' +
@@ -44,94 +44,57 @@ const generateNavBar = (isLoggedIn, isAdmin) => {
     return html;
 };
 
-const getMainPage = (request, reply) => {
-    const data = [
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://www.kaunas.lt/wp-content/uploads/sites/13/2015/11/VAIZDAS_005-750x750.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://www.centrehotel.lt/galery/_centrehotel//15.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },
-        {
-            id: '584e8dd6098f560b3c4e5444',
-            description: 'This is description',
-            image: `<div class="journey-image" style="background-image: url('http://pctech.lt/wp-content/uploads/2015/01/computer_repair_kaunas.jpg')"></div>`,
-            user: 'User',
-            button: `<button class="journey-read-more" onclick="window.location.href='./journey/584e8dd6098f560b3c4e5444'">Read more</button>`,
-        },  
-    ];
-    if (request.state.session) {
-        reply.view('index.html', {htmlData: {
-            head: htmlHead,
-            navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data
-        });
-    } else {
-        reply.view('index.html', {htmlData: {
-            head: htmlHead,
-            navbar:  generateNavBar(false, false)}, data,
-        });
-    }
+const formatJourneys = (data, edit) => {
+    data.forEach((journey) => {
+        if (journey.image !== 'false') {
+            journey.image = `<div class="journey-image" style="background-image: url('${journey.image}')"></div>`;
+        } else {
+            journey.image = `<div class="journey-image" style="background-image: url('../public/noimg.png')"></div>`;
+        }
+        
+        journey.button = `<button class="journey-read-more" onclick="window.location.href='./journey/${journey._id}'">Read more</button>`;
+        if (edit) {
+            journey.editButton = `<button class="journey-edit" onclick="window.location.href='./editJourney/${journey._id}'">Edit</button>`;
+        }
+    });
+    return data;
 };
+
+const getMainPage = (request, reply) => {
+   mongoService.getAllJourneys((data) => {
+       data = formatJourneys(data, false);
+       if (request.state.session) {
+           reply.view('index.html', {htmlData: {
+               head: htmlHead,
+               navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data,
+            });
+        } else {
+            reply.view('index.html', {htmlData: {
+                head: htmlHead,
+                navbar:  generateNavBar(false, false)}, data,
+            });
+        }
+    });   
+};
+
+const myJourneysView = (request, reply) => {
+    if (!request.state.session) {
+        reply.redirect('./login');
+        return;
+    }
+    mongoService.getAllUserJourneys(request.state.session.id, (data) => {
+        data = formatJourneys(data, true);
+        reply.view('./journey/myJourneys.html', {htmlData: {
+            head: htmlHead,
+            navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data,
+        });
+    });
+};
+
 
 module.exports = {
     htmlHead,
     generateNavBar,
     getMainPage,
+    myJourneysView,
 }
