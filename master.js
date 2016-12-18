@@ -144,6 +144,12 @@ server.route({
     handler: displayService.myJourneysView,
 });
 
+server.route({
+    method: 'GET',
+    path: '/search',
+    handler: displayService.search
+});
+
 mongoDb.mongoConnect(() => {});
 server.start((err) => {
 

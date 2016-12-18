@@ -53,7 +53,8 @@
 }
 
 .journey-description {
-    height: 100px;
+    height: 110px;
+    overflow: hidden;
 }
 
 .paragraph {
@@ -123,4 +124,34 @@
     height: 70%;
     border: solid 1px lightgray;
     margin: 0 100 0 100;
+}
+
+.search-bar {
+    width: 90%;
+    margin: auto;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    height: 50px;
+    border: solid 1px lightgray;
+    width: 48%;
+    padding: 10px;
+}
+
+.from-search-input {
+    margin-right: -10px;
+    border-radius: 10px 0 0 10px;
+}
+
+.to-search-input {
+    border-radius: 0 10px 10px 0;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.message {
+    text-align: center;
 }

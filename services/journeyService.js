@@ -1,5 +1,8 @@
 const mongoService = require('./mongoService.js');
 const displayService = require('./displayService.js');
+const request = require('request');
+const async = require('async');
+
 
 const newJourneyView = (request, reply) => {
     if (request.state.session) {
@@ -12,8 +15,29 @@ const newJourneyView = (request, reply) => {
     }
 };
 
-const generateCoords = (data) => {
+const getLocation = (data, callback) => {
+    const url = `http://maps.googleapis.com/maps/api/geocode/json?latlng=${data.coordinates.lat},${data.coordinates.lng}&sensor=true`;
+    request({
+        url,
+        json: true,
+    }, (error, response, body) => {
+        if (!error && response.statusCode === 200) {
+            data.location = body.results[0].formatted_address;
+            callback();
+        } else {
+            data.location = '';
+            callback();
+        }
+    });
+};
 
+const getLocations = (data, callback) => {
+    async.each(data.points, (point, callback) => {
+        getLocation(point, () => callback());
+    },
+    (error) => {
+        callback();
+    });
 };
 
 const generateJourneyPoints = (data) => {
@@ -36,8 +60,8 @@ const generateJourneyPoints = (data) => {
         temp.description = data['descriptions[]'];
         temp.img_url = data['images[]'];
         temp.coordinates = {
-                lat: data['lat[]'][i],
-                lng: data['lng[]'][i],
+                lat: data['lat[]'],
+                lng: data['lng[]'],
             }
         journeyPoints.push(temp);
     }
@@ -67,8 +91,10 @@ const create = (data, user, callback) => {
     journey.image = getFirstImage(data);
     journey.points = generateJourneyPoints(data);
     journey.date = new Date();
-    mongoService.insertJourney(journey);
-    callback();
+    getLocations(journey, () => {
+        mongoService.insertJourney(journey);
+        callback();
+    });
 };
 
 const countErrors = (data) => {
@@ -113,7 +139,6 @@ const countErrors = (data) => {
 };
 
 const newJourney = (request, reply) => {
-    console.log(request.payload);
     let errorsCount = 0;
     if (request.state.session) {
         if (countErrors(request.payload) === 0) {
@@ -201,8 +226,10 @@ const update = (data, user, callback) => {
     journey.image = getFirstImage(data);
     journey.points = generateJourneyPoints(data);
     journey.date = new Date();
-    mongoService.updateJourney(journey, data.id);
-    callback();
+     getLocations(journey, () => {
+        mongoService.updateJourney(journey, data.id);
+        callback();
+    });
 };
 
 const editJourney = (request, reply) => {
@@ -236,7 +263,7 @@ const generateCoordinatesArray = (data) => {
         coordinatesArray.push({
             lat: data.points[i].coordinates.lat,
             lng: data.points[i].coordinates.lng,
-            title: `'${data.points[i].location_name}'`,
+            title: `"${data.points[i].location_name}"`,
         });
     }
     return coordinatesArray;

@@ -45,6 +45,9 @@ const generateNavBar = (isLoggedIn, isAdmin) => {
 };
 
 const formatJourneys = (data, edit) => {
+    if (!data) {
+        return false;
+    }
     data.forEach((journey) => {
         if (journey.image !== false && journey.image !== 'false') {
             journey.image = `<div class="journey-image" style="background-image: url('${journey.image}')"></div>`;
@@ -91,10 +94,22 @@ const myJourneysView = (request, reply) => {
     });
 };
 
+const search = (request, reply) => {
+    if (request.query.to !== '') {
+        mongoService.searchFromTo(request.query['from'], request.query['to'], (data) => {
+            reply(data);
+        });
+    } else {
+        mongoService.searchFrom(request.query['from'], (data) => {
+            reply(data);
+        });
+    }
+}
 
 module.exports = {
     htmlHead,
     generateNavBar,
     getMainPage,
     myJourneysView,
+    search,
 }

@@ -3,17 +3,21 @@
 {{{htmlData.navbar}}}
 
 <div id="main-content">
-{{#each data}}
-    <div class="col-md-4 col-sm-6 col-xs-12">
-        <div class="journey-div">
-            {{{this.image}}}
-            <h2 class="journey-user">{{this.user}}</h2>
-            <p class="journey-description">{{this.description}}</p>
-            {{{this.button}}}
-            {{{this.editButton}}}
+{{#if data}}
+    {{#each data}}
+        <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="journey-div">
+                {{{this.image}}}
+                <h2 class="journey-user">{{this.user}}</h2>
+                <p class="journey-description">{{this.description}}</p>
+                {{{this.button}}}
+                {{{this.editButton}}}
+            </div>
         </div>
-    </div>
-{{/each}}
+    {{/each}}
+{{else}}
+    <div class="message">You have no journeys yet.</div>
+{{/if}}
 </div>
 
 </body>

@@ -91,6 +91,7 @@
         document.getElementById('pointDescription').value = "";
         document.getElementById('image').value = "";
         document.getElementById('point-errors').innerHTML = "";
+        document.getElementById('pointId').value = "";
         initMap();
     }
 
@@ -117,8 +118,7 @@
         if (point.update) {
             document.getElementById(point.id).innerHTML = html;
         } else {
-            document.getElementById('journey-points').innerHTML += `<div id="${point.id}" class="point">` +
-            html + '</div>';
+            document.getElementById('journey-points').innerHTML += `<div id="${point.id}" class="point">` + html + '</div>';
             pointsCount++;
         }
     }

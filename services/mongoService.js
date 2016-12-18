@@ -48,7 +48,7 @@ const saveNewPassword = (userEmail, hashedPassword, callback) => {
 };
 
 const getAllUsers = (callback) => {
-    usersCollection.find({}, {name: 1,
+    usersCollection.find({isAdmin: {$ne: true}}, {name: 1,
                         email: 1,
                         active: 1,
                         journeysCount: 1}).toArray((err, res) => {
@@ -110,7 +110,7 @@ const getAllUserJourneys = (id, callback) => {
             callback(false);
         }
     });
-}
+};
 
 const getAllJourneys = (callback) => {
     journeysCollection.find({}).sort({date: -1}).toArray((err, res) => {;
@@ -120,7 +120,19 @@ const getAllJourneys = (callback) => {
             callback(false);
         }
     });
-}
+};
+
+const searchFrom = (fromLocation, callback) => {
+    journeysCollection.find({ $text: { $search: fromLocation  } }).sort({date: -1}).toArray((err, res) => {
+        callback(res);
+    });
+};
+
+const searchFromTo = (fromLocation, toLocation, callback) => {
+    journeysCollection.find({ $text: { $search: `\"${fromLocation}\" \"${toLocation}\"`  } }).sort({date: -1}).toArray((err, res) => {
+        callback(res);
+    });
+};
 
 module.exports = {
     mongoConnect,
@@ -136,4 +148,6 @@ module.exports = {
     unblockUser,
     getAllUserJourneys,
     getAllJourneys,
+    searchFrom,
+    searchFromTo,
 }
