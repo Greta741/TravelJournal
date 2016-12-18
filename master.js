@@ -147,7 +147,15 @@ server.route({
 server.route({
     method: 'GET',
     path: '/search',
-    handler: displayService.search
+    handler: displayService.search,
+});
+
+server.route({
+    method: 'GET',
+    path: '/google9f6f3ca7bdd0bbae.html',
+    handler: (request, reply) => {
+        reply.view('google9f6f3ca7bdd0bbae.html');
+    }
 });
 
 mongoDb.mongoConnect(() => {});
