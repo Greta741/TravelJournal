@@ -6,17 +6,67 @@
     <div class="paragraph paragraph-1">
         <h1 class="w3-red">{{data.name}}</h1>
         {{data.description}}</div>
-    {{#each data.points}}
-        <div class="paragraph paragraph-2">
-            <div class="point-info">
-                <h2 class="w3-teal">{{this.location_name}}</h2>
-                <p>{{this.description}}<p>
+        {{#each data.points}}
+            <div class="paragraph paragraph-2">
+                <div class="point-info">
+                    <h2 class="w3-teal">{{this.location_name}}</h2>
+                    <p>{{this.description}}<p>
+                </div>
+                {{{this.image}}}
             </div>
-            {{{this.image}}}
-        </div>
-    {{/each}}
+        {{/each}}
+    <div id="map" class="map-view"></div>
     <div class="paragraph paragraph-3">{{data.summary}}</div>
 
 </div>
+
+<script>
+    function initMap() {
+
+        var bounds = new google.maps.LatLngBounds();
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 3,
+          center: {lat: 0, lng: -180},
+          mapTypeId: 'terrain'
+        });
+
+        var coordinates = [
+            {{#each data.coordinates}}
+            {
+                lat: {{this.lat}},
+                lng: {{this.lng}},
+                title: {{{this.title}}},
+            },
+            {{/each}}
+        ];
+
+        var path = new google.maps.Polyline({
+          path: coordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        function setMarkers() {
+            coordinates.forEach(function (position) {
+                var marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: position.title,
+                });
+                bounds.extend(marker.position);
+            });
+        }
+
+        path.setMap(map);
+        setMarkers();
+        map.fitBounds(bounds);
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmYJFldptBnUVyZTBfpqxwBHZ2xDJUuaA&callback=initMap">
+    </script>
 
 </body>

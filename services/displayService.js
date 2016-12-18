@@ -46,7 +46,7 @@ const generateNavBar = (isLoggedIn, isAdmin) => {
 
 const formatJourneys = (data, edit) => {
     data.forEach((journey) => {
-        if (journey.image !== 'false') {
+        if (journey.image !== false && journey.image !== 'false') {
             journey.image = `<div class="journey-image" style="background-image: url('${journey.image}')"></div>`;
         } else {
             journey.image = `<div class="journey-image" style="background-image: url('../public/noimg.png')"></div>`;

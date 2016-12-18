@@ -58,6 +58,10 @@
                         <label class="field" for="image">Image url</label>
                         <input type="URL" id="image" name="image" class="form-control input-sm" value="">
                     </div>
+                    <label>Select location</label>
+                    <div id="map" class="map">
+
+                    </div>
 
                     </div>
                 
@@ -76,6 +80,7 @@
 
 <script>
     {{{data.script}}}
+    var latlng = null;
     
     function clearErrors() {
         document.getElementById('errors').innerHTML = '';
@@ -86,6 +91,7 @@
         document.getElementById('pointDescription').value = "";
         document.getElementById('image').value = "";
         document.getElementById('point-errors').innerHTML = "";
+        initMap();
     }
 
     function generateHtmlPoint(point) {
@@ -103,8 +109,11 @@
         } else {
              html += `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">`;
         }
-        html += `<button type="button" class="btn btn-default" onclick="edit('${point.id}', '${point.name}', '${point.description}', '${point.image}')">Edit</button>`;
+        html += `<button type="button" class="btn btn-default" onclick="edit('${point.id}', '${point.name}',` +
+        `'${point.description}', '${point.image}', ${latlng.lat}, ${latlng.lng})">Edit</button>`;
         html += `<button type="button" class="btn btn-default" onclick="remove('${point.id}')">Remove</button>`;
+        html += `<input class="point-lat" type="hidden" name="lat" class="form-control input-sm" value="${latlng.lat}">`;
+        html += `<input class="point-lng" type="hidden" name="lng" class="form-control input-sm" value="${latlng.lng}">`;
         if (point.update) {
             document.getElementById(point.id).innerHTML = html;
         } else {
@@ -116,6 +125,10 @@
 
     function addNewJourneyPoint() {
         clearErrors();
+        if (!latlng) {
+            document.getElementById('point-errors').innerHTML = 'Select location.';
+            return;
+        }
         var point = {};
         point.name =  document.getElementById('pointName').value;
         point.description = document.getElementById('pointDescription').value;
@@ -130,11 +143,12 @@
             point.id = `point-${id++}`;
         }
         generateHtmlPoint(point);
+        latlng = null;
         $('#journeyPointModal').modal('hide');
         clearModal();
     }
 
-    function edit(id, name, description, image) {
+    function edit(id, name, description, image, lat, lng) {
         document.getElementById('pointId').value = id;
         document.getElementById('pointName').value = name;
         document.getElementById('pointDescription').value = description;
@@ -142,6 +156,7 @@
             document.getElementById('image').value = image;
         }
         $('#journeyPointModal').modal('show');
+        initMap({lat, lng});
     }
 
     function remove(pointId) {
@@ -164,6 +179,14 @@
         images  = [].map.call(images, function(image) {
             return image.value;
         });
+        var lat = document.getElementsByClassName('point-lat');
+        lat  = [].map.call(lat, function(lat) {
+            return lat.value;
+        });
+        var lng = document.getElementsByClassName('point-lng');
+        lng  = [].map.call(lng, function(lng) {
+            return lng.value;
+        });
         data.name = document.getElementById('name').value;
         data.description = document.getElementById('description').value;
         data.summary = document.getElementById('summary').value;
@@ -171,6 +194,8 @@
         data.descriptions = descriptions;
         data.images = images;
         data.id = document.getElementById('id').value;
+        data.lat = lat;
+        data.lng = lng;
         return data;
     }
 
@@ -190,6 +215,50 @@
         }
     }
 
+function initMap(ll) {
+    if (ll) {
+        myLatlng = ll;
+        latlng = ll;
+    } else {
+        var myLatlng = {lat: 54.895564790773385, lng: 23.8897705078125};
+    }
+    
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: myLatlng
+    });
+
+    if (ll) {
+        setMarker(ll);
+    }
+    
+    var marker;
+
+    function unsetMarker() {
+        try {
+            marker.setMap(null);
+        } catch (error) {}
+    }
+    
+    function setMarker(position) {
+        unsetMarker();
+        marker = new google.maps.Marker({
+            position: position,
+            map: map,
+        });
+    }
+    
+    google.maps.event.addListener(map, "click", function (event) {
+        latlng = {
+            lat:  event.latLng.lat(),
+            lng: event.latLng.lng(),
+        }
+        setMarker(latlng);
+    });
+}
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmYJFldptBnUVyZTBfpqxwBHZ2xDJUuaA&callback=initMap">
 </script>
 
 

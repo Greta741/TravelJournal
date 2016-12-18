@@ -12,6 +12,10 @@ const newJourneyView = (request, reply) => {
     }
 };
 
+const generateCoords = (data) => {
+
+};
+
 const generateJourneyPoints = (data) => {
     let journeyPoints = [];
     if (data['names[]'] instanceof Array) {
@@ -20,6 +24,10 @@ const generateJourneyPoints = (data) => {
             temp.location_name = data['names[]'][i];
             temp.description = data['descriptions[]'][i];
             temp.img_url = data['images[]'][i];
+            temp.coordinates = {
+                lat: data['lat[]'][i],
+                lng: data['lng[]'][i],
+            }
             journeyPoints.push(temp);
         }
     } else {
@@ -27,6 +35,10 @@ const generateJourneyPoints = (data) => {
         temp.location_name = data['names[]'];
         temp.description = data['descriptions[]'];
         temp.img_url = data['images[]'];
+        temp.coordinates = {
+                lat: data['lat[]'][i],
+                lng: data['lng[]'][i],
+            }
         journeyPoints.push(temp);
     }
     return journeyPoints;
@@ -92,10 +104,16 @@ const countErrors = (data) => {
                 errorsCount++;
         }
     }
+    if (data['lat[]'] instanceof Array && data['lng[]'] instanceof Array) {
+        if (data['lat[]'].length !==  data['lng[]'].length) {
+            errorsCount++;
+        }
+    }
     return errorsCount;
 };
 
 const newJourney = (request, reply) => {
+    console.log(request.payload);
     let errorsCount = 0;
     if (request.state.session) {
         if (countErrors(request.payload) === 0) {
@@ -121,6 +139,8 @@ const generateEditDivs = (data) => {
             `<div clas="point-div">${point.location_name}</div><label class="field">Description</label>` +
             `<input class="point-description" type="hidden" name="pointDescription" value="${point.description}">` +
             `<div clas="point-div">${point.description}</div>`;
+        temp += `<input type="hidden" name="lat" class="point-lat" value="${point.coordinates.lat}">`;
+        temp += `<input type="hidden" name="lng" class="point-lng" value="${point.coordinates.lng}">`;
         if (point.img_url !== "false") {
             temp += `<label class="field">Image</label>` +
             `<input class="point-image" type="hidden" name="image" value="${point.img_url}">` +
@@ -128,7 +148,8 @@ const generateEditDivs = (data) => {
         } else {
             temp +=  `<input class="point-image" type="hidden" name="image" value="${point.img_url}">`;
         }
-        temp += `<button type="button" class="btn btn-default" onclick="edit('point-${id}', '${point.location_name}', '${point.description}', '${point.img_url}')">Edit</button>` +
+        temp += `<button type="button" class="btn btn-default" onclick="edit('point-${id}', '${point.location_name}',` +
+            `'${point.description}', '${point.img_url}', ${point.coordinates.lat}, ${point.coordinates.lng})">Edit</button>` +
             `<button type="button" class="btn btn-default" onclick="remove('point-${id}')">Remove</button></div>`
         id++;
         tempPoints.push(temp);
@@ -209,6 +230,18 @@ const editJourney = (request, reply) => {
     })
 };
 
+const generateCoordinatesArray = (data) => {
+    let coordinatesArray = [];
+    for (var i = 0; i < data.points.length; i++) {
+        coordinatesArray.push({
+            lat: data.points[i].coordinates.lat,
+            lng: data.points[i].coordinates.lng,
+            title: `'${data.points[i].location_name}'`,
+        });
+    }
+    return coordinatesArray;
+};
+
 const generatePointsImageDivs = (data) => {
     data.points.forEach((point) => {
         if (point.img_url !== 'false') {
@@ -225,6 +258,7 @@ const journeyView = (request, reply) => {
      mongoService.getJourney(id, (journey) => {
         if (journey) {
             journey = generatePointsImageDivs(journey);
+            journey.coordinates = generateCoordinatesArray(journey);
             if (request.state.session) {
                 reply.view('./journey/view.html', {htmlData: {
                     head: displayService.htmlHead,
