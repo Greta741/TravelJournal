@@ -1,7 +1,7 @@
 const mongoService = require('./mongoService.js');
 const hashService = require('./hashService.js');
 
-const htmlHead = '<head><title>Travel journal</title>' +
+const htmlHead = '<!DOCTYPE html><html><head><title>Travel journal</title>' +
     '<link rel="stylesheet" href="../public/css/styles.css">' +
     '<meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">' +
