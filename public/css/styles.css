@@ -168,3 +168,12 @@
     }
 
 }
+
+.w3-teal,.w3-hover-teal:hover{color:#fff!important;background-color:#009688!important}
+.w3-red,.w3-hover-red:hover{color:#fff!important;background-color:#f44336!important}
+
+html, body {
+    font-family: Verdana,sans-serif !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
+}

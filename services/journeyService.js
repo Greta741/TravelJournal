@@ -3,7 +3,6 @@ const displayService = require('./displayService.js');
 const request = require('request');
 const async = require('async');
 
-
 const newJourneyView = (request, reply) => {
     if (request.state.session) {
         reply.view('./journey/create.html', {htmlData: {

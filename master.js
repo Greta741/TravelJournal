@@ -150,14 +150,6 @@ server.route({
     handler: displayService.search,
 });
 
-server.route({
-    method: 'GET',
-    path: '/google9f6f3ca7bdd0bbae.html',
-    handler: (request, reply) => {
-        reply.view('google9f6f3ca7bdd0bbae.html');
-    }
-});
-
 mongoDb.mongoConnect(() => {});
 server.start((err) => {
 
