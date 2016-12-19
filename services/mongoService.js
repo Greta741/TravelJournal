@@ -134,6 +134,12 @@ const searchFromTo = (fromLocation, toLocation, callback) => {
     });
 };
 
+const getAllJourneysId = (callback) => {
+    journeysCollection.find({}, {"_id": 1}).toArray((err, res) => {
+        callback(res);
+    });
+};
+
 module.exports = {
     mongoConnect,
     insertUser,
@@ -150,4 +156,5 @@ module.exports = {
     getAllJourneys,
     searchFrom,
     searchFromTo,
+    getAllJourneysId,
 }

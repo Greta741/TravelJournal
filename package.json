@@ -20,7 +20,9 @@
   "dependencies": {
     "async": "^2.1.4",
     "bcryptjs": "^2.3.0",
+    "cron": "^1.2.1",
     "eslint": "^3.6.0",
+    "fs": "0.0.1-security",
     "handlebars": "^4.0.6",
     "hapi": "^15.2.0",
     "inert": "^4.0.2",
