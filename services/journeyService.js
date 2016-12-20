@@ -185,10 +185,17 @@ const generateEditDivs = (data) => {
 
 const errorMessage = (reply, request, message) => {
     const data = {message: `<div class="message">${message}</div>`}
-    reply.view('saved.html', {htmlData: {
-        head: displayService.htmlHead,
-        navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-    }, data});
+    if (request.state.session) {
+        reply.view('saved.html', {htmlData: {
+            head: displayService.htmlHead,
+            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
+        }, data});
+    } else {
+        reply.view('saved.html', {htmlData: {
+            head: displayService.htmlHead,
+            navbar:  displayService.generateNavBar(false, false),
+        }, data});
+    }
 }
 
 const editJourneyView = (request, reply) => {
@@ -212,7 +219,6 @@ const editJourneyView = (request, reply) => {
             errorMessage(reply, request, 'Sorry, cannot find.');
         }
     });
-
 };
 
 const update = (data, user, callback) => {

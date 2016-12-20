@@ -1,11 +1,17 @@
 .simple-form {
     margin: auto;
-    width: 40%;
+    width: 50%;
+    background-color: white;
+    padding: 25px;
+    border-radius: 5px;
+    border: solid 1px #81A8C3;
+    margin-bottom: 25px;
 }
 
 .point {
     border: solid 1px lightgray;
     padding: 5px;
+    margin-bottom: -1px
 }
 
 .point-img {
@@ -140,7 +146,7 @@
 
 .search-input {
     height: 50px;
-    border: solid 1px lightgray;
+    border: solid 1px #81A8C3;
     width: 48%;
     padding: 10px;
 }
@@ -172,7 +178,18 @@
     .paragraph-3 {
         margin-bottom: 25px;
     }
+}
 
+@media (min-width:900px) {
+    .simple-form {
+        width: 35%;
+    }
+}
+
+@media (max-width:600px) {
+    .simple-form {
+        width: 90%;
+    }
 }
 
 .w3-teal,.w3-hover-teal:hover{color:#fff!important;background-color:#186091!important}
@@ -182,6 +199,7 @@ html, body {
     font-family: Verdana,sans-serif !important;
     font-size: 15px !important;
     line-height: 1.5 !important;
+    background-color: #fbfbfb !important;
 }
 
 .form-control {
