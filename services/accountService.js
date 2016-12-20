@@ -96,10 +96,7 @@ const registerUser = (request, reply) => {
         date_registered: new Date(),
         });
     });
-    reply().redirect('/').state('session', {
-        email: request.payload.email,
-        isAdmin: false,
-    });
+    reply().redirect('/');
 };
 
 const register = (request, reply) => {
