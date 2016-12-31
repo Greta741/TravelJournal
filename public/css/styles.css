@@ -104,6 +104,7 @@
 
 .user-table {
     cursor: pointer;
+    color: blue;
 }
 
 .user-table:hover {

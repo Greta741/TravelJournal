@@ -27,29 +27,39 @@
         document.getElementById('errors').innerHTML = '';
     }
 
-    function block(email) {
+    function block(email, user) {
+        console.log('block');
         clearErrors();
         $.post("/block", {email: email}, function(result) {
+            console.log(result);
             if (result) {
-                location.reload();
-            } else {
-                document.getElementById('errors').innerHTML = 'Failed to save.';
-                $("html, body").animate({ scrollTop: 0 }, "slow");
+                var element = document.getElementById(user);
+                element.innerHTML = 'Unblock';
+                element.removeAttribute('onclick');
+                element.onclick = function() { 
+                    console.log('unblock - 1');
+                    unblock(email, user); } ;
             }
         });
     }
 
-     function unblock(email) {
+    function unblock(email, user) {
+        console.log('unblock');
         clearErrors();
         $.post("/unblock", {email: email}, function(result) {
-            if (result) {
-                location.reload();
-            } else {
-                document.getElementById('errors').innerHTML = 'Failed to save.';
-                $("html, body").animate({ scrollTop: 0 }, "slow");
+            console.log(result);
+             if (result) {
+                var element = document.getElementById(user);
+                element.innerHTML = 'Block';
+                element.removeAttribute('onclick');
+                element.onclick = function() {
+                    console.log('block - 1');
+                    block(email, user); } ;
             }
         });
     }
+
+     
     
 </script>
 </body>

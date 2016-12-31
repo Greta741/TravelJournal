@@ -104,8 +104,11 @@ const myJourneysView = (request, reply) => {
             loadMore = true;
         }
         data = formatJourneys(data, true);
-        let time = new Date(data[data.length -1].date);
-        time = `var time = new Date("${time.toISOString()}")`;
+        let time = '';
+        try {
+            time = new Date(data[data.length -1].date);
+            time = `var time = new Date("${time.toISOString()}")`;
+        } catch (e) {}
         reply.view('./journey/myJourneys.html', {htmlData: {
             head: htmlHead,
             navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data, time, loadMore
