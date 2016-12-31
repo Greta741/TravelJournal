@@ -21,12 +21,17 @@
     </div>
 {{/each}}
 </div>
+<div id="load-more-button"><button class="next-page" onclick="loadMore()">Load more</button></div>
 
 <script>
-
-    function displayJourneys(data) {
+    {{{time}}}
+    var searchData = {};
+    var journeysPerPage = 12;
+    function displayJourneys(data, empty) {
         var mainDiv = document.getElementById('main-content');
-        mainDiv.innerHTML = '';
+        if (empty) {
+            mainDiv.innerHTML = '';
+        }
         if (data.length === 0) {
             mainDiv.innerHTML = '<div class="message">Couldn\'t find anything.</div>';
             return;
@@ -48,19 +53,50 @@
     }
 
     function search() {
-        console.log('search');
-        var searchData = {
+        searchData = {
             from: document.getElementById('from-location').value,
             to: document.getElementById('to-location').value,
+            time: false,
         }
+        document.getElementById('load-more-button').innerHTML = '<button class="next-page" onclick="loadMoreSearchResults()">Load more</button>';
          $.get("/search", searchData, function(result) {
-             console.log(result);
                 if (result) {
-                    displayJourneys(result);
+                    displayJourneys(result, true);
+                    var date = new Date(result[result.length - 1].date);
+                    searchData.time = date.toISOString();
                 } else {
 
                 }
             });   
+    }
+    
+    function loadMoreSearchResults() {
+        $.get("/nextSearchPage", searchData, function(result) {
+            if (!result) {
+                document.getElementById('load-more-button').innerHTML = '';
+            } else if (result.length < journeysPerPage) {
+                displayJourneys(result, false);
+                document.getElementById('load-more-button').innerHTML = '';
+            } else {
+                displayJourneys(result, false);
+                var date = new Date(result[result.length - 1].date);
+                searchData.time = date.toISOString();
+            }
+        });
+    }
+
+    function loadMore() {
+         $.get("/nextPage", {time: time.toISOString()}, function(result) {
+             if (!result) {
+                  document.getElementById('load-more-button').innerHTML = '';
+             } else if (result.length < journeysPerPage) {
+                 displayJourneys(result, false);
+                 document.getElementById('load-more-button').innerHTML = '';
+             } else {
+                 displayJourneys(result, false);
+                 time = new Date(result[result.length - 1].date);
+             }
+        });   
     }
     
 </script>

@@ -51,6 +51,12 @@ server.route({
 
 server.route({
     method: 'GET',
+    path: '/nextPage',
+    handler: displayService.getNextPage,
+});
+
+server.route({
+    method: 'GET',
     path: '/login',
     handler: accountService.loginView,
 });
@@ -147,8 +153,20 @@ server.route({
 
 server.route({
     method: 'GET',
+    path: '/userJourneysNextPage',
+    handler: displayService.getMyJourneysNextPage,
+});
+
+server.route({
+    method: 'GET',
     path: '/search',
     handler: displayService.search,
+});
+
+server.route({
+    method: 'GET',
+    path: '/nextSearchPage',
+    handler: displayService.getNextSearchPage,
 });
 
 server.route({

@@ -152,7 +152,7 @@
         document.getElementById('pointId').value = id;
         document.getElementById('pointName').value = name;
         document.getElementById('pointDescription').value = description;
-        if (image) {
+        if (image && image !== 'false') {
             document.getElementById('image').value = image;
         }
         $('#journeyPointModal').modal('show');

@@ -5,6 +5,7 @@ const url = 'mongodb://travelDb:travelDb@ds041566.mlab.com:41566/traveldb?maxPoo
 let usersCollection;
 let journeysCollection;
 const ObjectId = require('mongodb').ObjectID;
+const max = 12;
 
 const mongoConnect = (callback) => {
     MongoClient.connect(url, (err, db) => {
@@ -102,8 +103,9 @@ const unblockUser = (email, callback) => {
     });
 };
 
-const getAllUserJourneys = (id, callback) => {
-    journeysCollection.find({userId: id}).sort({date: -1}).toArray((err, res) => {;
+const getAllUserJourneys = (id, time, callback) => {
+    journeysCollection.find({userId: id, date: {$lt: time}}, {date: 1, description: 1, image: 1, user: 1})
+        .sort({date: -1}).limit(max).toArray((err, res) => {;
         if (res.length !== 0) {
             callback(res);
         } else {
@@ -112,8 +114,9 @@ const getAllUserJourneys = (id, callback) => {
     });
 };
 
-const getAllJourneys = (callback) => {
-    journeysCollection.find({}).sort({date: -1}).toArray((err, res) => {;
+const getAllJourneys = (time, callback) => {
+    journeysCollection.find({date: {$lt: time}}, {date: 1, description: 1, image: 1, user: 1})
+        .sort({date: -1}).limit(max).toArray((err, res) => {;
         if (res.length !== 0) {
             callback(res);
         } else {
@@ -122,15 +125,25 @@ const getAllJourneys = (callback) => {
     });
 };
 
-const searchFrom = (fromLocation, callback) => {
-    journeysCollection.find({ $text: { $search: fromLocation  } }).sort({date: -1}).toArray((err, res) => {
-        callback(res);
+const searchFrom = (fromLocation, time, callback) => {
+    journeysCollection.find({ $text: { $search: fromLocation  }, date: {$lt: time} }, {date: 1, description: 1, image: 1, user: 1})
+        .sort({date: -1}).limit(max).toArray((err, res) => {
+        if (res.length !== 0) {
+            callback(res);
+        } else {
+            callback(false);
+        }
     });
 };
 
-const searchFromTo = (fromLocation, toLocation, callback) => {
-    journeysCollection.find({ $text: { $search: `\"${fromLocation}\" \"${toLocation}\"`  } }).sort({date: -1}).toArray((err, res) => {
-        callback(res);
+const searchFromTo = (fromLocation, time, toLocation, callback) => {
+    journeysCollection.find({ $text: { $search: `\"${fromLocation}\" \"${toLocation}\"`  }, date: {$lt: time} }, {date: 1, description: 1, image: 1, user: 1})
+        .sort({date: -1}).limit(max).toArray((err, res) => {
+        if (res.length !== 0) {
+            callback(res);
+        } else {
+            callback(false);
+        }
     });
 };
 

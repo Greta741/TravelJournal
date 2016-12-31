@@ -19,5 +19,53 @@
     <div class="message">You have no journeys yet.</div>
 {{/if}}
 </div>
+{{#if loadMore}}
+    <div id="load-more-button"><button class="next-page" onclick="loadMore()">Load more</button></div>
+{{/if}}
 </body>
+<script>
+    {{{time}}}
+    var journeysPerPage = 12;
+    function displayJourneys(data, empty) {
+        var mainDiv = document.getElementById('main-content');
+        if (empty) {
+            mainDiv.innerHTML = '';
+        }
+        if (data.length === 0) {
+            mainDiv.innerHTML = '<div class="message">Couldn\'t find anything.</div>';
+            return;
+        }
+        data.forEach((journey) => {
+            var temp = '<div class="col-md-4 col-sm-6 col-xs-12">' +
+            '<div class="journey-div">';
+            if (journey.image !== false && journey.image !== 'false') {
+                temp += `<div class="journey-image" style="background-image: url('${journey.image}')"></div>`;
+            } else {
+                temp += `<div class="journey-image" style="background-image: url('../public/noimg.png')"></div>`;
+            }
+            temp += `<h2 class="journey-user">${journey.user}</h2>` +
+            `<p class="journey-description">${journey.description}</p>` +
+            `<button class="journey-read-more" onclick="window.location.href='./journey/${journey._id}'">Read more</button>` +
+            `</div></div>`;
+            mainDiv.innerHTML += temp;
+        });
+    }
+
+    function loadMore() {
+         $.get("/userJourneysNextPage", {time: time.toISOString()}, function(result) {
+             if (!result) {
+                  document.getElementById('load-more-button').innerHTML = '';
+             } else if (result.length < journeysPerPage) {
+                 displayJourneys(result, false);
+                 document.getElementById('load-more-button').innerHTML = '';
+             } else {
+                 displayJourneys(result, false);
+                 time = new Date(result[result.length - 1].date);
+             }
+        });   
+    }
+
+</script>
+
+
 </html>
