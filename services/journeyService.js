@@ -159,14 +159,14 @@ const generateEditDivs = (data) => {
     let tempPoints = [];
     data.points.forEach((point) => {
         let temp = `<div id="point-${id}" class="point">` +
-            `<label class="field">Name</label><input class="point-name" type="hidden" name="pointName" value="${point.location_name}">` +
-            `<div clas="point-div">${point.location_name}</div><label class="field">Description</label>` +
+            `<label>Name</label><input class="point-name" type="hidden" name="pointName" value="${point.location_name}">` +
+            `<div clas="point-div">${point.location_name}</div><label>Description</label>` +
             `<input class="point-description" type="hidden" name="pointDescription" value="${point.description}">` +
             `<div clas="point-div">${point.description}</div>`;
         temp += `<input type="hidden" name="lat" class="point-lat" value="${point.coordinates.lat}">`;
         temp += `<input type="hidden" name="lng" class="point-lng" value="${point.coordinates.lng}">`;
         if (point.img_url !== "false") {
-            temp += `<label class="field">Image</label>` +
+            temp += `<label>Image</label>` +
             `<input class="point-image" type="hidden" name="image" value="${point.img_url}">` +
             `<img class="point-img" src="${point.img_url}" alt="image">`;
         } else {

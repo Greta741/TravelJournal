@@ -9,11 +9,11 @@
 	<form action="javascript:submit();" id="journey-form">
         {{{data.id}}}
         <div>
-            <label class="field" for="Name">Name</label>
+            <label>Name</label>
             {{{data.name}}}
             </div>
          <div>
-                <label class="field" for="description">Description</label>
+                <label>Description</label>
                 <textarea id="description" name="description" rows="15" class="form-control input-sm" required="true">{{data.description}}</textarea>
             </div>
 
@@ -27,7 +27,7 @@
             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#journeyPointModal">Add</button>
 
             <div>
-                <label class="field" for="summary">Summary</label>
+                <label>Summary</label>
                 <textarea id="summary" name="summary" rows="15" class="form-control input-sm" required="true">{{data.summary}}</textarea>
             </div>
 
@@ -47,15 +47,15 @@
                     <div id="point-errors" class="error"></div>
                     <input type="hidden" id="pointId" name="pointId" class="form-control input-sm" value="">
                     <div>
-                        <label class="field" for="pointName">Name</label>
+                        <label>Name</label>
                         <input type="text" id="pointName" name="pointName" class="form-control input-sm" required="true" value="">
                     </div>
                     <div>
-                        <label class="field" for="pointDescription">Journey point description</label>
+                        <label>Journey point description</label>
                         <textarea id="pointDescription" name="pointDescription" rows="5" class="form-control input-sm" required="true"></textarea>
                     </div>
                     <div>
-                        <label class="field" for="image">Image url</label>
+                        <label>Image url</label>
                         <input type="URL" id="image" name="image" class="form-control input-sm" value="">
                     </div>
                     <label>Select location</label>
@@ -97,14 +97,14 @@
 
     function generateHtmlPoint(point) {
         var html = '';
-        html += `<label class="field">Name</label>` +
+        html += `<label>Name</label>` +
         `<input class="point-name" type="hidden" name="pointName" class="form-control input-sm" value="${point.name}">` +
         `<div clas="point-div">${point.name}</div>` +
-        `<label class="field">Description</label>` +
+        `<label>Description</label>` +
         `<input class="point-description" type="hidden" name="pointDescription" class="form-control input-sm" value="${point.description}">` +
         `<div clas="point-div">${point.description}</div>`;
         if (point.image) {
-            html += `<label class="field">Image</label>` +
+            html += `<label>Image</label>` +
         `<input class="point-image" type="hidden" name="image" class="form-control input-sm" value="${point.image}">` +
         `<img class="point-img" src="${point.image}" alt="image">`;
         } else {
