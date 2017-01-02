@@ -180,6 +180,7 @@ const generateEditDivs = (data) => {
     });
     data.points = tempPoints;
     data.script = `var id = ${id}; var pointsCount = ${id};`;
+    data.remove = `<a href="../remove/${data._id}"  class="submit btn btn-default">Delete</a>`
     return data;
 };
 
@@ -308,10 +309,31 @@ const journeyView = (request, reply) => {
      });
 };
 
+const deleteJourney = (request, reply) => {
+    const id =  request.params.id;
+    if (!request.state.session) {
+        errorMessage(reply, request, 'Sorry, cannot find.');
+        return;
+    }
+    mongoService.getJourney(id, (journey) => {
+        if (journey) {
+            if (journey.userId === request.state.session.id) {
+                mongoService.removeJourney(id);
+                reply().redirect('/myJourneys');
+            } else {
+                errorMessage(reply, request, 'Sorry, cannot find.');
+            }
+        } else {
+            errorMessage(reply, request, 'Sorry, cannot find.');
+        }
+    });
+};
+
 module.exports = {
     newJourneyView,
     newJourney,
     editJourneyView,
     editJourney,
     journeyView,
+    deleteJourney,
 }

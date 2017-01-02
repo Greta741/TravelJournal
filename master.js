@@ -117,6 +117,12 @@ server.route({
 
 server.route({
     method: 'GET',
+    path: '/remove/{id}',
+    handler: journeyService.deleteJourney,
+});
+
+server.route({
+    method: 'GET',
     path: '/editJourney/{id}',
     handler: journeyService.editJourneyView,
 });

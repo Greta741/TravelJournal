@@ -20,7 +20,7 @@
                 <label>Journey points</label>
             </div>
             
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#journeyPointModal">Add</button>
+            <button type="button" class="btn btn-success" onclick="resizeMap()" data-toggle="modal" data-target="#journeyPointModal">Add</button>
 
             <div>
                 <label>Summary</label>
@@ -77,6 +77,14 @@
     var id = 0;
     var pointsCount = 0;
     var latlng = null;
+
+    function resize() {
+        google.maps.event.trigger(map, "resize");
+    }
+
+    function resizeMap() {
+        setTimeout(resize, 1000);
+    }
 
     function clearErrors() {
         document.getElementById('errors').innerHTML = '';
@@ -154,6 +162,7 @@
         }
         $('#journeyPointModal').modal('show');
         initMap({lat, lng});
+        resizeMap();
     }
 
     function remove(pointId) {
@@ -212,7 +221,6 @@
     }
 
 function initMap(ll) {
-    console.log(ll);
     if (ll) {
         myLatlng = ll;
         latlng = ll;

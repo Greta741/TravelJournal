@@ -153,6 +153,10 @@ const getAllJourneysId = (callback) => {
     });
 };
 
+const removeJourney = (id) => {
+    journeysCollection.remove({"_id": ObjectId(id)});
+}
+
 module.exports = {
     mongoConnect,
     insertUser,
@@ -170,4 +174,5 @@ module.exports = {
     searchFrom,
     searchFromTo,
     getAllJourneysId,
+    removeJourney,
 }

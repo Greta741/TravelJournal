@@ -27,6 +27,7 @@
     {{{time}}}
     var searchData = {};
     var journeysPerPage = 12;
+
     function displayJourneys(data, empty) {
         var mainDiv = document.getElementById('main-content');
         if (empty) {
@@ -60,12 +61,13 @@
         }
         document.getElementById('load-more-button').innerHTML = '<button class="next-page" onclick="loadMoreSearchResults()">Load more</button>';
          $.get("/search", searchData, function(result) {
-                if (result) {
+                if (result.length !== 0 && result !== false) {
                     displayJourneys(result, true);
                     var date = new Date(result[result.length - 1].date);
                     searchData.time = date.toISOString();
                 } else {
-
+                    document.getElementById('main-content').innerHTML = '<div class="message">Couldn\'t find anything.</div>';
+                    document.getElementById('load-more-button').innerHTML = '';
                 }
             });   
     }
