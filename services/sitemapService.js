@@ -16,7 +16,7 @@ const generateSitemap = () => {
     });
 };
 
-const updateSitemap = new CronJob('00 30 * * * *', () => {
+const updateSitemap = new CronJob('00 00 * * * *', () => {
     generateSitemap();
 }, null, true, 'America/Los_Angeles');
 
