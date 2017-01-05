@@ -91,8 +91,6 @@ const registerUser = (request, reply) => {
         password: hashedPassword,
         isAdmin: false,
         active: true,
-        journeysCount: 0,
-        journeys: [],
         date_registered: new Date(),
         });
     });
