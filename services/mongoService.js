@@ -136,7 +136,7 @@ const searchFrom = (fromLocation, time, callback) => {
     });
 };
 
-const searchFromTo = (fromLocation, time, toLocation, callback) => {
+const searchFromTo = (fromLocation, toLocation, time, callback) => {
     journeysCollection.find({ $text: { $search: `\"${fromLocation}\" \"${toLocation}\"`  }, date: {$lt: time} }, {date: 1, description: 1, image: 1, user: 1})
         .sort({date: -1}).limit(max).toArray((err, res) => {
         if (res.length !== 0) {
