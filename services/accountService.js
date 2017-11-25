@@ -120,7 +120,6 @@ const logout = (request, reply) => {
 
 const block = (request, reply) => {
     const data = accountDataService.blockUsersData(request.state.session);
-    console.log(data);
     if (data.redirect) {
         reply.redirect('./login');
     }
@@ -128,7 +127,6 @@ const block = (request, reply) => {
         displayService.sendReplyView(reply, data);
     }
     mongoService.blockUser(request.payload.email, (result) => {
-        console.log(result);
         reply(result);
     });
 };
