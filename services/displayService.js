@@ -45,6 +45,26 @@ const generateNavBar = (isLoggedIn, isAdmin) => {
     return html;
 };
 
+const getUserData = (session) => {
+    return {
+        email: session.email,
+        isAdmin: session.isAdmin
+    }
+};
+
+const sendReplyView = (reply, data, usersList) => {
+    let replyData;
+    if (usersList) {
+        replyData = usersList;
+    } else {
+        replyData = data;
+    }
+    reply.view(data.replyView, {htmlData: {
+        head: displayService.htmlHead,
+        navbar:  displayService.generateNavBar(data.userEmail, data.isAdmin)
+    }, data: replyData});
+}
+
 const formatJourneys = (data, edit) => {
     if (!data) {
         return false;
@@ -156,6 +176,7 @@ const getNextSearchPage = (request, reply) => {
 module.exports = {
     htmlHead,
     generateNavBar,
+    sendReplyView,
     getMainPage,
     getNextPage,
     myJourneysView,

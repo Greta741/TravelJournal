@@ -336,4 +336,6 @@ module.exports = {
     editJourney,
     journeyView,
     deleteJourney,
+    randomFuntction,
+    getLocation
 }
