@@ -153,6 +153,23 @@ const newJourney = (request, reply) => {
 };
 
 const generateEditDivs = (data) => {
+    data = {
+        name: 'test',
+        _id: 'test',
+        points: [
+            {
+                location_name: 'test location',
+                description: 'description',
+                coordinates: {
+                    lat: 0,
+                    lng: 0
+                },
+                img_url: 'test url'
+            }
+        ]
+    };
+
+
     data.name = `<input type="text" id="name" name="name" class="form-control input-sm" required="true" value="${data.name}">`;
     data.id = `<input type="hidden" id="id" name="id" value="${data._id}">`;
     let id = 0;
@@ -336,6 +353,11 @@ module.exports = {
     editJourney,
     journeyView,
     deleteJourney,
-    randomFuntction,
-    getLocation
+    getLocation,
+    getFirstImage,
+    generateJourneyPoints,
+    countErrors,
+    generateEditDivs,
+    generateCoordinatesArray,
+    generatePointsImageDivs
 }

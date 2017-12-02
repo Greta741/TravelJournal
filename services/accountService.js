@@ -1,16 +1,29 @@
 const mongoService = require('./mongoService.js');
-const displayService = require('./displayService.js');
+const displayService = require('./displayService');
 const hashService = require('./hashService.js');
 const accountDataService = require('../dataService/accountDataService');
 
+const sendReplyView = (reply, data, usersList) => {
+    let replyData;
+    if (usersList) {
+        replyData = usersList;
+    } else {
+        replyData = data;
+    }
+    reply.view(data.replyView, {htmlData: {
+        head: displayService.htmlHead,
+        navbar:  displayService.generateNavBar(data.userEmail, data.isAdmin)
+    }, data: replyData});
+};
+
 const loginView = (request, reply) => {
     const data = accountDataService.loginViewData(request.state.session);
-    displayService.sendReplyView(reply, data);
+    sendReplyView(reply, data);
 };
 
 const registerView = (request, reply) => {
     const data = accountDataService.registerViewData(request.state.session);
-    displayService.sendReplyView(reply, data);
+    sendReplyView(reply, data);
 };
 
 const login = (request, reply) => {
@@ -18,7 +31,7 @@ const login = (request, reply) => {
         hashService.checkMatch(request.payload.password, user.password, (result) => {
             const data = accountDataService.loginData(user, request.payload.password, request.payload.email, result);
             if (!data.redirectInfo) {
-                displayService.sendReplyView(reply, data);
+                sendReplyView(reply, data);
             } else {
                 reply().redirect('/').state('session', data.redirectInfo);
             }
@@ -52,7 +65,7 @@ const register = (request, reply) => {
         if (data.canRegister) {
             registerUser(request, reply);
         } else {
-            displayService.sendReplyView(reply, data);
+            sendReplyView(reply, data);
         }
     });
 };
@@ -62,7 +75,7 @@ const changePasswordView = (request, reply) => {
     if (data.redirect) {
         reply().redirect('/login');
     } else {
-        displayService.sendReplyView(reply, data);
+        sendReplyView(reply, data);
     }
 };
 
@@ -106,10 +119,10 @@ const getUserList = (request, reply) => {
         if (data.isAdmin) {
             mongoService.getAllUsers((users) => {
                 const usersList = accountDataService.generateUsersList(users)
-                displayService.sendReplyView(reply, data, usersList);
+                sendReplyView(reply, data, usersList);
             });
         } else {
-            displayService.sendReplyView(reply, data);
+            sendReplyView(reply, data);
         }
     }
 };
@@ -124,7 +137,7 @@ const block = (request, reply) => {
         reply.redirect('./login');
     }
     if (!request.state.session.isAdmin) {
-        displayService.sendReplyView(reply, data);
+        sendReplyView(reply, data);
     }
     mongoService.blockUser(request.payload.email, (result) => {
         reply(result);
@@ -137,7 +150,7 @@ const unblock = (request, reply) => {
         reply.redirect('./login');
     }
     if (!request.state.session.isAdmin) {
-        displayService.sendReplyView(reply, data);
+        sendReplyView(reply, data);
     }
     mongoService.unblockUser(request.payload.email, (result) => {
         reply(result);

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node --use_strict master.js",
     "dev": "nodemon master.js",
-    "test": "nyc --reporter=html mocha"
+    "test": "nyc --reporter=html --reporter=text mocha"
   },
   "repository": {
     "type": "git",
