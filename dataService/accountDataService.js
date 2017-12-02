@@ -30,7 +30,6 @@ const registerViewData = (session) => {
         data.userEmail = false;
         data.isAdmin = false;
     }
-    console.log(data);
     return data;
 };
 
