@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node --use_strict master.js",
     "dev": "nodemon master.js",
-    "test": "nyc --reporter=html --reporter=text mocha"
+    "test": "nyc --reporter=html --reporter=text mocha && jest",
+    "posttest": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,12 @@
     "mocha": "^4.0.1",
     "nock": "^9.0.22",
     "nyc": "11.2.1",
-    "sinon": "^4.0.1"
+    "sinon": "^4.0.1",
+    "jest": "^21.0.0",
+    "jest-cli": "^21.0.0",
+    "coveralls": "^3.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
