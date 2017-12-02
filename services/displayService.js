@@ -162,4 +162,5 @@ module.exports = {
     search,
     getNextSearchPage,
     getMyJourneysNextPage,
+    formatJourneys
 }

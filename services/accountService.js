@@ -1,177 +1,90 @@
 const mongoService = require('./mongoService.js');
-const displayService = require('./displayService.js');
+const displayService = require('./displayService');
 const hashService = require('./hashService.js');
+const accountDataService = require('../dataService/accountDataService');
+
+const sendReplyView = (reply, data, usersList) => {
+    let replyData;
+    if (usersList) {
+        replyData = usersList;
+    } else {
+        replyData = data;
+    }
+    reply.view(data.replyView, {htmlData: {
+        head: displayService.htmlHead,
+        navbar:  displayService.generateNavBar(data.userEmail, data.isAdmin)
+    }, data: replyData});
+};
 
 const loginView = (request, reply) => {
-    let data = {
-        email: '<input type="text" id="email" name="email" class="form-control input-sm" required="true" value="">',
-    };
-    if (request.state.session) {
-        data.message = '<div class="message">You are already logged in.</div>';
-        reply.view('saved.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }, data});
-    } else {
-        reply.view('login.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(false, false),
-        }, data});
-    }
+    const data = accountDataService.loginViewData(request.state.session);
+    sendReplyView(reply, data);
 };
 
 const registerView = (request, reply) => {
-    let data = {
-        name: '<input type="text" id="name" name="name" class="form-control input-sm" required="true" value="">',
-        email: '<input type="email" id="email" name="email" class="form-control input-sm" required="true" value="">',
-    };
-    if (request.state.session) {
-        data.message = '<div class="message">You are already logged in.</div>';
-        reply.view('saved.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }, data});
-    } else {
-        reply.view('register.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(false, false),
-        }, data});
-    }
+    const data = accountDataService.registerViewData(request.state.session);
+    sendReplyView(reply, data);
 };
 
 const login = (request, reply) => {
-    let data = {
-        email: '<input type="text" id="email" name="email" class="form-control input-sm" required="true"' +
-         'value="' + request.payload.email + '">',
-        errors: '',
-    };
     mongoService.getPassword(request.payload.email, (user) => {
-        if (user) {
-            hashService.checkMatch(request.payload.password, user.password, (result) => {
-                if (!user.active) {
-                    const data = {
-                        message: '<div class="message">This user is blocked.</div>'
-                    }
-                    reply.view('saved.html', {htmlData: {
-                        head: displayService.htmlHead,
-                        navbar:  displayService.generateNavBar(false, false),
-                    }, data});
-                    return;
-                }
-                if (result) {
-                    reply().redirect('/').state('session', {
-                        id: user._id,
-                        name: user.name,
-                        email: request.payload.email,
-                        isAdmin: user.isAdmin,
-                    });
-                } else {
-                    data.errors = '<div class="error">Wrong email or password</div>';
-                    reply.view('login.html', {htmlData: {
-                        head: displayService.htmlHead,
-                        navbar:  displayService.generateNavBar(false, false),
-                    }, data});
-                }
-            });
-        } else {
-            data.errors = '<div class="error">Wrong email or password</div>';
-            reply.view('login.html', {htmlData: {
-                head: displayService.htmlHead,
-                navbar:  displayService.generateNavBar(false, false),
-            }, data});
-        }
-    });  
+        hashService.checkMatch(request.payload.password, user.password, (result) => {
+            const data = accountDataService.loginData(user, request.payload.password, request.payload.email, result);
+            if (!data.redirectInfo) {
+                sendReplyView(reply, data);
+            } else {
+                reply().redirect('/').state('session', data.redirectInfo);
+            }
+        });
+    });
 };
 
 const registerUser = (request, reply) => {
      hashService.hashString(request.payload.password, (hashedPassword) => {
         mongoService.insertUser({
-        name: request.payload.name,
-        email: request.payload.email,
-        password: hashedPassword,
-        isAdmin: false,
-        active: true,
-        date_registered: new Date(),
+            name: request.payload.name,
+            email: request.payload.email,
+            password: hashedPassword,
+            isAdmin: false,
+            active: true,
+            date_registered: new Date(),
         });
     });
     reply().redirect('/');
 };
 
 const register = (request, reply) => {
-    let errorsCount = 0;
-    let data = {
-        name: '<input type="text" id="name" name="name" class="form-control input-sm" required="true" value="' +
-            request.payload.name + '">',
-        email: '<input type="email" id="email" name="email" class="form-control input-sm" required="true" value="' +
-            request.payload.email + '">',
-        errors: '',
-    };
-    data.errors += '<div class="error">';
-
-    if (!request.payload.name.match(/^[0-9a-zA-Z]+$/)) {
-        data.errors += 'Name can only contain letters and numbers<br>';
-        errorsCount++;
-    }
-
-    if (request.payload.password !== request.payload.repeatPassword) {
-        data.errors += 'Passwords does not match<br>';
-        errorsCount++;
-    }
-    if (request.payload.name.length < 3) {
-        data.errors += 'Name is too short<br>';
-        errorsCount++;
-    }
-    if (request.payload.password.length < 5) {
-        data.errors += 'Password is too short<br>';
-        errorsCount++;
-    }
     mongoService.findEmail(request.payload.email, (result) => {
-        if (!result) {
-            data.errors += 'Email already exists<br>';
-            errorsCount++;
-        }
-        data.errors += '</div>';
-        if (errorsCount === 0){
+        const data = accountDataService.registerData(
+            request.payload.name,
+            request.payload.email,
+            request.payload.password,
+            request.payload.repeatPassword,
+            result
+        );
+        if (data.canRegister) {
             registerUser(request, reply);
         } else {
-            reply.view('register.html', {htmlData: {
-                head: displayService.htmlHead,
-                navbar:  displayService.generateNavBar(false, false),
-            }, data})
+            sendReplyView(reply, data);
         }
-    });   
+    });
 };
 
 const changePasswordView = (request, reply) => {
-    if (request.state.session) {
-        reply.view('changePassword.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }
-    });
-    } else {
+    const data = accountDataService.changePasswordViewData(request.state.session);
+    if (data.redirect) {
         reply().redirect('/login');
+    } else {
+        sendReplyView(reply, data);
     }
 };
 
 const changePassword = (request, reply) => {
-    let data = {
-        errors: '<div class="error">',
-    };
-    let errorsCount = 0;
-    if (request.payload.password !== request.payload.repeatPassword) {
-        data.errors += 'Passwords does not match<br>';
-        errorsCount++;
-    }
-    if (request.payload.password.length < 5) {
-        data.errors += 'Password is too short<br>';
-        errorsCount++;
-    }
-
+    let data = accountDataService.changePasswordData(request.payload.password, request.payload.repeatPassword)
     mongoService.getPassword(request.state.session.email, (user) => {
         if (user) {
             hashService.checkMatch(request.payload.oldPassword, user.password, (result) => {
-                if (result && errorsCount === 0) {
+                if (result && data.errorsCount === 0) {
                     hashService.hashString(request.payload.password, (hashedPassword) => {
                         mongoService.saveNewPassword(request.state.session.email, hashedPassword, () => {
                             data.message = '<div class="message">New password saved.</div>';
@@ -193,52 +106,25 @@ const changePassword = (request, reply) => {
                 }
             });
         } else {
-            reply().redorect('/login');
+            reply().redirect('/login');
         }
     });  
 };
 
-const generateUsersList = (users) => {
-    let usersList = [];
-    let usersCount = 1;
-    users.forEach((user) =>{
-        let userData = '';
-        userData += `<tr><td>${usersCount}</td>` +
-        `<td>${user.name}</td>` +
-        `<td>${user.email}</td>`;
-        if (user.active) {
-            userData +=  `<td class="user-table" id="user-${usersCount}" onclick="block('${user.email}', 'user-${usersCount}')">Block</td>`;
-        } else {
-            userData +=  `<td class="user-table"  id="user-${usersCount}" onclick="unblock('${user.email}', 'user-${usersCount}')">Unblock</td>`;
-        }
-        userData += '</tr>';
-        usersList.push(userData);
-        usersCount++;
-    });
-    return usersList;
-}
-
 const getUserList = (request, reply) => {
-    if (!request.state.session) {
+    const data = accountDataService.getUsersListData(request.state.session);
+    if (data.redirect) {
         reply().redirect('/login');
-    } else if (!request.state.session.isAdmin) {
-        const data = {
-            message: '<div class="message">Cannot reach this page.</div>'
-        }
-        reply.view('saved.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }, data});
     } else {
-        mongoService.getAllUsers((users) => {
-            const usersList = generateUsersList(users);
-            reply.view('usersList.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }, usersList});
-        });
+        if (data.isAdmin) {
+            mongoService.getAllUsers((users) => {
+                const usersList = accountDataService.generateUsersList(users)
+                sendReplyView(reply, data, usersList);
+            });
+        } else {
+            sendReplyView(reply, data);
+        }
     }
-
 };
 
 const logout = (request, reply) => {
@@ -246,17 +132,12 @@ const logout = (request, reply) => {
 };
 
 const block = (request, reply) => {
-    if (!request.state.session) {
+    const data = accountDataService.blockUsersData(request.state.session);
+    if (data.redirect) {
         reply.redirect('./login');
-        return;
     }
     if (!request.state.session.isAdmin) {
-        const data = {message: `<div class="message">Access denied.</div>`}
-        reply.view('saved.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }, data});
-        return;
+        sendReplyView(reply, data);
     }
     mongoService.blockUser(request.payload.email, (result) => {
         reply(result);
@@ -264,17 +145,12 @@ const block = (request, reply) => {
 };
 
 const unblock = (request, reply) => {
-    if (!request.state.session) {
+    const data = accountDataService.blockUsersData(request.state.session);
+    if (data.redirect) {
         reply.redirect('./login');
-        return;
     }
     if (!request.state.session.isAdmin) {
-        const data = {message: `<div class="message">Access denied.</div>`}
-        reply.view('saved.html', {htmlData: {
-            head: displayService.htmlHead,
-            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin),
-        }, data});
-        return;
+        sendReplyView(reply, data);
     }
     mongoService.unblockUser(request.payload.email, (result) => {
         reply(result);
