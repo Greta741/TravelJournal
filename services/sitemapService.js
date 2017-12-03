@@ -12,7 +12,7 @@ const generateSitemap = () => {
             sitemap += `<url><loc>http:travel5.herokuapp.com/journey/${item._id}</loc></url>`;
         });
         sitemap += '</urlset>';
-        fs.writeFile("sitemap.xml", sitemap); 
+        fs.writeFile('sitemap.xml', sitemap); 
     });
 };
 

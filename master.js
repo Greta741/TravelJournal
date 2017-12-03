@@ -7,6 +7,8 @@ const Hapi = require('hapi');
 const Vision = require('vision');
 const Inert = require('inert');
 
+const someInvalidVar1 = 5;
+
 const server = new Hapi.Server();
 
 server.connection({
@@ -185,7 +187,6 @@ server.route({
 
 mongoDb.mongoConnect(() => {});
 server.start((err) => {
-
     if (err) {
         throw err;
     }

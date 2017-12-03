@@ -40,7 +40,7 @@ const login = (request, reply) => {
 };
 
 const registerUser = (request, reply) => {
-     hashService.hashString(request.payload.password, (hashedPassword) => {
+    hashService.hashString(request.payload.password, (hashedPassword) => {
         mongoService.insertUser({
             name: request.payload.name,
             email: request.payload.email,
@@ -80,7 +80,7 @@ const changePasswordView = (request, reply) => {
 };
 
 const changePassword = (request, reply) => {
-    let data = accountDataService.changePasswordData(request.payload.password, request.payload.repeatPassword)
+    let data = accountDataService.changePasswordData(request.payload.password, request.payload.repeatPassword);
     mongoService.getPassword(request.state.session.email, (user) => {
         if (user) {
             hashService.checkMatch(request.payload.oldPassword, user.password, (result) => {
@@ -118,7 +118,7 @@ const getUserList = (request, reply) => {
     } else {
         if (data.isAdmin) {
             mongoService.getAllUsers((users) => {
-                const usersList = accountDataService.generateUsersList(users)
+                const usersList = accountDataService.generateUsersList(users);
                 sendReplyView(reply, data, usersList);
             });
         } else {
@@ -168,4 +168,4 @@ module.exports = {
     logout,
     block,
     unblock,
-}
+};

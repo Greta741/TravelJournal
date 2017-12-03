@@ -9,7 +9,7 @@ const loginViewData = (session) => {
         data.isAdmin = session.isAdmin;
     } else {
         data.replyView = 'login.html';
-        data.userEmail = false
+        data.userEmail = false;
         data.isAdmin = false;
     }
     return data;
@@ -52,7 +52,7 @@ const loginData = (user, password, email, passwordMatch) => {
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
-        }
+        };
         return data;
     }
     data.errors = '<div class="error">Wrong email or password</div>';
@@ -114,7 +114,7 @@ const changePasswordViewData = (session) => {
             userEmail: session.email,
             isAdmin: session.isAdmin,
             redirect: false
-        }
+        };
     } else {
         data.redirect = true;
     }
@@ -134,7 +134,7 @@ const changePasswordData = (password, repeatPassword) => {
         data.errors += 'Password is too short<br>';
         data.errorsCount++;
     }
-    return data
+    return data;
 };
 
 const generateUsersList = (users) => {
@@ -187,7 +187,7 @@ const blockUsersData = (session) => {
         return data;
     }
     if (!session.isAdmin) {
-        data.message = `<div class="message">Access denied.</div>`;
+        data.message = '<div class="message">Access denied.</div>';
         data.replyView = 'saved.html';
         data.userEmail = session.email;
         data.isAdmin = session.isAdmin;
@@ -206,4 +206,4 @@ module.exports = {
     generateUsersList,
     getUsersListData,
     blockUsersData,
-}
+};

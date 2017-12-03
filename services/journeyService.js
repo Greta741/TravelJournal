@@ -6,9 +6,9 @@ const async = require('async');
 const newJourneyView = (request, reply) => {
     if (request.state.session) {
         reply.view('./journey/create.html', {htmlData: {
-                head: displayService.htmlHead,
-                navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin)},
-            });
+            head: displayService.htmlHead,
+            navbar:  displayService.generateNavBar(request.state.session.email, request.state.session.isAdmin)},
+        });
     } else {
         reply().redirect('/login');
     }
@@ -50,7 +50,7 @@ const generateJourneyPoints = (data) => {
             temp.coordinates = {
                 lat: data['lat[]'][i],
                 lng: data['lng[]'][i],
-            }
+            };
             journeyPoints.push(temp);
         }
     } else {
@@ -59,9 +59,9 @@ const generateJourneyPoints = (data) => {
         temp.description = data['descriptions[]'];
         temp.img_url = data['images[]'];
         temp.coordinates = {
-                lat: data['lat[]'],
-                lng: data['lng[]'],
-            }
+            lat: data['lat[]'],
+            lng: data['lng[]'],
+        };
         journeyPoints.push(temp);
     }
     return journeyPoints;
@@ -69,16 +69,16 @@ const generateJourneyPoints = (data) => {
 
 const getFirstImage = (data) => {
     if (data['images[]'] instanceof Array) {
-         for (var i = 0; i < data['images[]'].length; i++) {
-             if (data['images[]'][i] !== 'false') {
-                 return data['images[]'][i];
-             }
+        for (var i = 0; i < data['images[]'].length; i++) {
+            if (data['images[]'][i] !== 'false') {
+                return data['images[]'][i];
+            }
         }
     } else if (data['images[]']) {
         return data['images[]'];
     }
     return false;
-}
+};
 
 const create = (data, user, callback) => {
     let journey = {};
@@ -120,13 +120,13 @@ const countErrors = (data) => {
     }
     if (data['names[]'] instanceof Array && data['descriptions[]'] instanceof Array && data['images[]'] instanceof Array) {
         if (data['names[]'].length !== data['descriptions[]'].length) {
-                errorsCount++;
+            errorsCount++;
         }
         if (data['names[]'].length !== data['images[]'].length) {
-                errorsCount++;
+            errorsCount++;
         }
         if (data['descriptions[]'].length !== data['images[]'].length) {
-                errorsCount++;
+            errorsCount++;
         }
     }
     if (data['lat[]'] instanceof Array && data['lng[]'] instanceof Array) {
@@ -182,8 +182,8 @@ const generateEditDivs = (data) => {
             `<div clas="point-div">${point.description}</div>`;
         temp += `<input type="hidden" name="lat" class="point-lat" value="${point.coordinates.lat}">`;
         temp += `<input type="hidden" name="lng" class="point-lng" value="${point.coordinates.lng}">`;
-        if (point.img_url !== "false") {
-            temp += `<label>Image</label>` +
+        if (point.img_url !== 'false') {
+            temp += '<label>Image</label>' +
             `<input class="point-image" type="hidden" name="image" value="${point.img_url}">` +
             `<img class="point-img" src="${point.img_url}" alt="image">`;
         } else {
@@ -191,18 +191,18 @@ const generateEditDivs = (data) => {
         }
         temp += `<button type="button" class="btn btn-default" onclick="edit('point-${id}', '${point.location_name}',` +
             `'${point.description}', '${point.img_url}', ${point.coordinates.lat}, ${point.coordinates.lng})">Edit</button>` +
-            `<button type="button" class="btn btn-default" onclick="remove('point-${id}')">Remove</button></div>`
+            `<button type="button" class="btn btn-default" onclick="remove('point-${id}')">Remove</button></div>`;
         id++;
         tempPoints.push(temp);
     });
     data.points = tempPoints;
     data.script = `var id = ${id}; var pointsCount = ${id};`;
-    data.remove = `<a href="../remove/${data._id}"  class="submit btn btn-default">Delete</a>`
+    data.remove = `<a href="../remove/${data._id}"  class="submit btn btn-default">Delete</a>`;
     return data;
 };
 
 const errorMessage = (reply, request, message) => {
-    const data = {message: `<div class="message">${message}</div>`}
+    const data = {message: `<div class="message">${message}</div>`};
     if (request.state.session) {
         reply.view('saved.html', {htmlData: {
             head: displayService.htmlHead,
@@ -214,7 +214,7 @@ const errorMessage = (reply, request, message) => {
             navbar:  displayService.generateNavBar(false, false),
         }, data});
     }
-}
+};
 
 const editJourneyView = (request, reply) => {
     const id =  request.params.id;
@@ -249,7 +249,7 @@ const update = (data, user, callback) => {
     journey.image = getFirstImage(data);
     journey.points = generateJourneyPoints(data);
     journey.date = new Date();
-     getLocations(journey, () => {
+    getLocations(journey, () => {
         mongoService.updateJourney(journey, data.id);
         callback();
     });
@@ -277,7 +277,7 @@ const editJourney = (request, reply) => {
         } else {
             reply(false);
         }
-    })
+    });
 };
 
 const generateCoordinatesArray = (data) => {
@@ -305,7 +305,7 @@ const generatePointsImageDivs = (data) => {
 
 const journeyView = (request, reply) => {
     const id = request.params.id;
-     mongoService.getJourney(id, (journey) => {
+    mongoService.getJourney(id, (journey) => {
         if (journey) {
             journey = generatePointsImageDivs(journey);
             journey.coordinates = generateCoordinatesArray(journey);
@@ -321,9 +321,9 @@ const journeyView = (request, reply) => {
                 }, data: journey});
             }
         } else {
-             errorMessage(reply, request, 'Sorry, cannot find.');
+            errorMessage(reply, request, 'Sorry, cannot find.');
         }
-     });
+    });
 };
 
 const deleteJourney = (request, reply) => {
@@ -360,4 +360,4 @@ module.exports = {
     generateEditDivs,
     generateCoordinatesArray,
     generatePointsImageDivs
-}
+};

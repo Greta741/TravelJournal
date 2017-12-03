@@ -53,7 +53,7 @@ const formatJourneys = (data, edit) => {
         if (journey.image !== false && journey.image !== 'false') {
             journey.image = `<div class="journey-image" style="background-image: url('${journey.image}')"></div>`;
         } else {
-            journey.image = `<div class="journey-image" style="background-image: url('../public/noimg.png')"></div>`;
+            journey.image = '<div class="journey-image" style="background-image: url(\'../public/noimg.png\')"></div>';
         }
         journey.button = `<button class="journey-read-more" onclick="window.location.href='../journey/${journey._id}'">Read more</button>`;
         if (edit) {
@@ -64,18 +64,18 @@ const formatJourneys = (data, edit) => {
 };
 
 const getMainPage = (request, reply) => {
-   mongoService.getAllJourneys(new Date(), (data) => {
-       let loadMore = false;
-       if (data.lengt > max) {
-           loadMore = true;
+    mongoService.getAllJourneys(new Date(), (data) => {
+        let loadMore = false;
+        if (data.lengt > max) {
+            loadMore = true;
         }
-       data = formatJourneys(data, false);
-       let time = new Date(data[data.length -1].date);
-       time = `var time = new Date("${time.toISOString()}")`;
-       if (request.state.session) {
-           reply.view('index.html', {htmlData: {
-               head: htmlHead,
-               navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data, time, loadMore
+        data = formatJourneys(data, false);
+        let time = new Date(data[data.length -1].date);
+        time = `var time = new Date("${time.toISOString()}")`;
+        if (request.state.session) {
+            reply.view('index.html', {htmlData: {
+                head: htmlHead,
+                navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data, time, loadMore
             });
         } else {
             reply.view('index.html', {htmlData: {
@@ -89,7 +89,7 @@ const getMainPage = (request, reply) => {
 const getNextPage = (request, reply) => {
     const time = new Date(request.query.time);
     mongoService.getAllJourneys(time, (data) => {
-       reply(data);
+        reply(data);
     });   
 };
 
@@ -119,7 +119,7 @@ const myJourneysView = (request, reply) => {
 const getMyJourneysNextPage = (request, reply) => {
     const time = new Date(request.query.time);
     mongoService.getAllUserJourneys(request.state.session.id, time, (data) => {
-       reply(data);
+        reply(data);
     });   
 };
 
@@ -133,7 +133,7 @@ const search = (request, reply) => {
             reply(data);
         });
     }
-}
+};
 
 const getNextSearchPage = (request, reply) => {
     let time;
@@ -163,4 +163,4 @@ module.exports = {
     getNextSearchPage,
     getMyJourneysNextPage,
     formatJourneys
-}
+};
