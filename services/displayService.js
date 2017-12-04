@@ -1,5 +1,4 @@
 const mongoService = require('./mongoService.js');
-const hashService = require('./hashService.js');
 
 const max = 12;
 
@@ -108,7 +107,9 @@ const myJourneysView = (request, reply) => {
         try {
             time = new Date(data[data.length -1].date);
             time = `var time = new Date("${time.toISOString()}")`;
-        } catch (e) {}
+        } catch (e) {
+            console.warn(e);
+        }
         reply.view('./journey/myJourneys.html', {htmlData: {
             head: htmlHead,
             navbar:  generateNavBar(request.state.session.email, request.state.session.isAdmin)}, data, time, loadMore

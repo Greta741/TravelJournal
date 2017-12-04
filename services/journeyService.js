@@ -34,7 +34,7 @@ const getLocations = (data, callback) => {
     async.each(data.points, (point, callback) => {
         getLocation(point, () => callback());
     },
-    (error) => {
+    () => {
         callback();
     });
 };
@@ -138,7 +138,6 @@ const countErrors = (data) => {
 };
 
 const newJourney = (request, reply) => {
-    let errorsCount = 0;
     if (request.state.session) {
         if (countErrors(request.payload) === 0) {
             create(request.payload, {name: request.state.session.name, id: request.state.session.id}, () => {

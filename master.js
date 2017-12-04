@@ -1,13 +1,10 @@
 const displayService = require('./services/displayService.js');
 const accountService = require('./services/accountService.js');
 const journeyService = require('./services/journeyService.js');
-const sitemapService = require('./services/sitemapService.js');
 const mongoDb = require('./services/mongoService.js');
 const Hapi = require('hapi');
 const Vision = require('vision');
 const Inert = require('inert');
-
-const someInvalidVar1 = 5;
 
 const server = new Hapi.Server();
 
